@@ -1,0 +1,21 @@
+﻿@model List<HouseholdViewModel>
+
+@{
+    ViewBag.Title = "ViewHouseholds";
+}
+
+<h2>View Households</h2>
+
+<p>Hello!</p>
+
+@if(ViewBag.HasErrored == true)
+{
+    <p>There is an error</p>
+}
+
+
+@Html.ActionLink("Create Household", "CreateHousehold", "HouseholdApiHouseholds")
+
+<a href=@Url.Action("ViewHousehold", "HouseholdApiHouseholds", new { householdId = "e08e44ea-76b9-4ec5-8d2d-79df315810a0" })>View Household</a>
+
+@Html.ActionLink("View Household a", "ViewHousehold", "HouseholdApiHouseholds", routeValues: new { householdId = "e08e44ea-76b9-4ec5-8d2d-79df315810a0" }, htmlAttributes: null);

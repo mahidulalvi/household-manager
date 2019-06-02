@@ -1,0 +1,30 @@
+﻿@model CreateHouseholdBindingModel
+
+@{
+    ViewBag.Title = "CreateHousehold";
+}
+
+<h2>Create Household</h2>
+
+
+@if (ViewBag.HasErrored != null && ViewBag.HasErrored == true)
+{
+    <p>Something's not right. Please try again</p>
+}
+
+
+<form method="post">
+    <div class="form-control">
+        @Html.LabelFor(p => p.Name)
+        @Html.TextBoxFor(p => p.Name)
+    </div>
+
+    <div class="form-control">
+        @Html.LabelFor(p => p.Description)
+        @Html.TextBoxFor(p => p.Description)
+    </div>
+
+    <div class="form-control">
+        <button type="submit">Submit</button>
+    </div>
+</form>

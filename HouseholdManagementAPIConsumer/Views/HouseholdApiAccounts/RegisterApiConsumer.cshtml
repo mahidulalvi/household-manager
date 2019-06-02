@@ -1,0 +1,87 @@
+﻿@model RegisterBindingModel
+
+@{
+    ViewBag.Title = "RegisterApiConsumer";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up form by Colorlib</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="~/TemplatesResources/RegisterTemplate/fonts/material-icon/css/material-design-iconic-font.min.css" />
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/TemplatesResources/RegisterTemplate/css/style.css" />
+</head>
+<body>
+
+    <div class="main">
+
+        <section class="signup">
+            <!-- <img src="images/signup-bg.jpg" alt=""> -->
+            <div class="container">
+                @if (ViewBag.HasErrored == true)
+                {
+                    <div class="errorDiv">
+                        <p>Something's not right! Please try again</p>
+                    </div>
+                }
+
+                <div class="signup-content">
+                    <form method="post" id="signup-form" class="signup-form">
+                        <h2 class="form-title">Create account</h2>
+                        <div class="form-group">
+                            @Html.TextBoxFor(p => p.Email, new { @class = "form-input", placeholder = "Your Email" })
+                        </div>
+                        <div class="form-group">
+                            @Html.PasswordFor(p => p.Password, new { id = "password", @class = "form-input", placeholder = "Password" })
+                            <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
+                        </div>
+                        <div class="form-group">
+                            @Html.PasswordFor(p => p.ConfirmPassword, new { @class = "form-input", placeholder = "Confirm password", id = "re_password" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up" />
+                        </div>
+                    </form>
+                    <p class="loginhere">
+                        Already have an account? <a href="@Url.Action("LoginApiConsumer", "HouseholdApiAccounts")" class="loginhere-link">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- JS -->
+    <script src="~/TemplatesResources/RegisterTemplate/vendor/jquery/jquery.min.js"></script>
+    <script src="~/TemplatesResources/RegisterTemplate/js/main.js"></script>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
+
+@*<h2>RegisterApiConsumer</h2>*@
+
+@*<form method="post">
+    <div class="form-control">
+        @Html.LabelFor(p => p.Email, "Email")
+        @Html.TextBoxFor(p => p.Email)
+    </div>
+
+    <div class="form-control">
+        @Html.LabelFor(p => p.Password, "Password")
+        @Html.PasswordFor(p => p.Password)
+    </div>
+
+    <div class="form-control">
+        @Html.LabelFor(p => p.ConfirmPassword, "Confirm password")
+        @Html.PasswordFor(p => p.ConfirmPassword)
+    </div>
+
+    <div class="form-control">
+        <button type="submit">Submit</button>
+    </div>
+</form>*@

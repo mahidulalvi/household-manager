@@ -1,0 +1,34 @@
+﻿@model EditHouseholdBindingModel
+
+@{
+    ViewBag.Title = "EditHousehold";
+}
+
+<h2>Edit Household</h2>
+
+@if (ViewBag.HasErrored != null && ViewBag.HasErrored == true)
+{
+    <p>Encountered a problem! Please try again later</p>
+}
+
+
+@if (ViewBag.HasErrored == null && ViewBag.NoHouseholds == null)
+{
+    <form method="post" @*action="@Url.Action("EditHousehold", "HouseholdApiHouseholds")"*@>
+        <div class="form-control">
+            @Html.LabelFor(p => p.Name)
+            @Html.TextBoxFor(p => p.Name)
+        </div>
+
+        <div class="form-control">
+            @Html.LabelFor(p => p.Description)
+            @Html.TextAreaFor(p => p.Description)
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+}
+else if (ViewBag.NoHouseholds != null && ViewBag.NoHouseholds == true && ViewBag.HasErrored == null)
+{
+    <p>No households found</p>
+}

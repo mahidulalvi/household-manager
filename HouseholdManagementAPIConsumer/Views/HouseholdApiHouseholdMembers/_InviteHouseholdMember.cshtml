@@ -1,0 +1,20 @@
+﻿@model InviteHouseholdMemberBindingModel
+
+
+@{
+    ViewBag.Title = "_InviteHouseholdMember";
+}
+
+<h2>_Invite Household Member</h2>
+
+@if (ViewBag.HouseholdId != null)
+{
+    <form method="post" action="@Url.Action("_InviteHouseholdMember", "HouseholdApiHouseholdMembers", new { householdId = ViewBag.HouseholdId })">
+        <div class="form-control">
+            @Html.LabelFor(p => p.Email)
+            @Html.TextBoxFor(p => p.Email)
+        </div>
+
+        <button>Invite</button>
+    </form>
+}

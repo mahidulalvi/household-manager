@@ -1,0 +1,32 @@
+﻿@model List<HouseholdMember>
+
+@{
+    Layout = null;
+}
+
+@*<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_ViewHouseholdMembers</title>
+</head>
+<body>
+    <div> 
+    </div>
+</body>
+</html>*@
+
+@if(ViewBag.HasErrored != null && ViewBag.HasErrored == true)
+{
+    <p>No members found</p>
+}
+
+@if (Model.Any())
+{
+    for(var i = 0; i < Model.Count(); i++)
+    {
+        <p style="color: red; font-size: .7em">@Model[i].UserName</p>
+        <p style="color: blue; font-size: .5em">@Model[i].Email</p>
+    }
+}

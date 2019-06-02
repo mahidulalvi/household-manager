@@ -1,0 +1,109 @@
+﻿@model HouseholdViewModel
+
+@{
+    ViewBag.Title = "ViewHousehold";
+}
+
+<h2>View Household</h2>
+
+<p>Hello!</p>
+
+@Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = "e08e44ea-76b9-4ec5-8d2d-79df315810a0" }, htmlAttributes: null)
+
+<form method="post" action="@Url.Action("LeaveHousehold", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })">
+    <button type="submit">Leave household</button>
+</form>
+
+
+<p>@Html.DisplayForModel(Model)</p>
+
+<a href="#" onclick="ViewMembersAJAX()">View Members</a>
+<div id="viewMembersHolder">
+
+</div>
+
+
+
+
+<!-- Button trigger modal -->
+<a class="btn invite-member-button" data-toggle="modal" href="#invitemembersModal" onclick="ModalContentFetcher()">Invite household members</a>
+
+<!-- Modal -->
+<div class="modal fade" id="invitemembersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                @*<button type="button" class="btn btn-primary">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+    function ModalContentFetcher() {
+        return fetch('../../HouseholdApIHouseholdMembers/_InviteHouseholdMember?householdId=@Model.Id', {
+            method: "Get"
+        }).then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                //console.log(response);
+
+                response.text().then(function (data) {
+                    //console.log(data);
+                    DomAdder(data, ".modal-body");
+                });
+            }
+        )
+        .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+        });
+    }
+
+
+
+
+    function DomAdder(receivedElement, targetElementName) {
+        var domelement = document.querySelector(targetElementName);
+        domelement.innerHTML = "";
+        return domelement.insertAdjacentHTML('afterbegin', receivedElement);
+    }
+
+
+    function ViewMembersAJAX() {
+        return fetch("../../@Url.Action("_ViewHouseholdMembers", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })", {
+            method: "Get"
+        }).then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                //console.log(response);
+
+                response.text().then(function (data) {
+                    //console.log(data);
+                    DomAdder(data, "#viewMembersHolder");
+                });
+            }
+        )
+        .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+        });
+    }
+</script>

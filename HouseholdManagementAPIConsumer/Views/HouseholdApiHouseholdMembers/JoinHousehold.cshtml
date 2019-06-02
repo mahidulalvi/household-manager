@@ -1,0 +1,22 @@
+﻿@model JoinHouseholdBindingModel
+@{
+    ViewBag.Title = "JoinHousehold";
+}
+
+<h2>JoinHousehold</h2>
+
+@if(ViewBag.HasErrored != null && ViewBag.HasErrored == true)
+{
+    <p>Encountered a problem! Please try again</p>
+}
+
+
+@if(Model != null)
+{
+    <form method="post">
+        @Html.HiddenFor(p => p.InviteId)
+        <p>Join household @Model.HouseholdName</p>
+        <button>Join</button>
+    </form>
+}
+

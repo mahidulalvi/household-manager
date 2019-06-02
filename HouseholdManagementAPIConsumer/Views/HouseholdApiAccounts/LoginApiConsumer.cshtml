@@ -1,0 +1,131 @@
+﻿@model LoginBindingModel
+
+@{
+    ViewBag.Title = "LoginApiConsumer";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login V8</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="~/TemplatesResources/Logintemplate/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/bootstrap/css/bootstrap.min.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/animate/animate.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/css-hamburgers/hamburgers.min.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/animsition/css/animsition.min.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/select2/select2.min.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/vendor/daterangepicker/daterangepicker.css" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/css/util.css" />
+    
+    <link rel="stylesheet" type="text/css" href="~/TemplatesResources/Logintemplate/css/main.css" />
+    <!--===============================================================================================-->
+</head>
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <form method="post" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                    <span class="login100-form-title">
+                        Sign In
+                    </span>
+
+                    <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
+                        @Html.TextBoxFor(p => p.UserName, new { @class = "input100", placeholder = "Username" })
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Please enter password">
+                        @*<input class="" type="password" name="pass" placeholder="Password">*@
+                        @Html.PasswordFor(p => p.Password, new { @class = "input100", placeholder = "Password" })
+                        <span class="focus-input100"></span>
+                    </div>
+
+
+                    <div class="text-right p-t-13 p-b-23">
+                        <span class="txt1">
+                            Forgot
+                        </span>
+
+                        @Html.ActionLink("Password?", "ForgotPassword", "HouseholdApiAccounts", new { @class = "txt2" })
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type="submit">
+                            Sign in
+                        </button>
+                    </div>
+
+                    <div class="flex-col-c p-t-170 p-b-40" style="padding: 60px 0px 40px">
+                        <span class="txt1 p-b-9">
+                            Don’t have an account?
+                        </span>
+
+                        @Html.ActionLink("Sign up now", "RegisterApiConsumer", "HouseholdApiAccounts", new { @class = "txt3" })
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!--===============================================================================================-->
+
+    <script src="~/TemplatesResources/Logintemplate/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/TemplatesResources/Logintemplate/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+
+    <script src="~/TemplatesResources/Logintemplate/vendor/bootstrap/js/popper.js"></script>
+    <script src="~/TemplatesResources/Logintemplate/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/TemplatesResources/Logintemplate/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/TemplatesResources/Logintemplate/vendor/daterangepicker/moment.min.js"></script>
+
+    <script src="~/TemplatesResources/Logintemplate/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/TemplatesResources/Logintemplate/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/TemplatesResources/Logintemplate/Js/main.js"></script>
+
+    @*<h2>LoginApiConsumer</h2>*@
+
+    @*<form method="post">*@
+    @*<div class="form-control">
+            @Html.LabelFor(p => p.UserName)
+
+        </div>*@
+
+    @*<div class="form-control">
+            @Html.LabelFor(p => p.Password)
+            @Html.PasswordFor(p => p.Password)
+        </div>*@
+
+    @*<div class="form-control">
+                <button type="submit">Submit</button>
+            </div>
+        </form>*@
+
+    @*<div>
+            @Html.ActionLink("Forgot password?", "ForgotPassword", "HouseholdApiAccounts")
+        </div>*@
+    <footer>
+        Template taken from colorlib
+    </footer>
+</body>
+
+</html>
