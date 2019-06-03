@@ -14,17 +14,21 @@
 
 
 <form method="post">
-    <div class="form-control">
-        @Html.LabelFor(p => p.Name)
-        @Html.TextBoxFor(p => p.Name)
+    <div class="form-group">
+        <p>
+            @Html.LabelFor(p => p.Name, new { @class = "text-info" })
+        </p>
+        @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
     </div>
 
-    <div class="form-control">
-        @Html.LabelFor(p => p.Description)
-        @Html.TextBoxFor(p => p.Description)
+    <div class="form-group">
+        <p>
+            @Html.LabelFor(p => p.Description, new { @class = "text-info" })
+        </p>
+        @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
     </div>
 
-    <div class="form-control">
+    <div class="form-group">
         <button type="submit">Submit</button>
     </div>
 </form>

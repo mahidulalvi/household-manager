@@ -4,6 +4,7 @@
     ViewBag.Title = "EditHousehold";
 }
 
+
 <h2>Edit Household</h2>
 
 @if (ViewBag.HasErrored != null && ViewBag.HasErrored == true)
@@ -15,14 +16,18 @@
 @if (ViewBag.HasErrored == null && ViewBag.NoHouseholds == null)
 {
     <form method="post" @*action="@Url.Action("EditHousehold", "HouseholdApiHouseholds")"*@>
-        <div class="form-control">
-            @Html.LabelFor(p => p.Name)
+        <div class="form-group">
+            <p>
+                @Html.LabelFor(p => p.Name, new { @class = "text-info" })
+            </p>
             @Html.TextBoxFor(p => p.Name)
         </div>
 
-        <div class="form-control">
-            @Html.LabelFor(p => p.Description)
-            @Html.TextAreaFor(p => p.Description)
+        <div class="form-group">
+            <p>
+                @Html.LabelFor(p => p.Description, new { @class = "text-info" })
+            </p>
+            @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
         </div>
 
         <button type="submit">Submit</button>

@@ -8,7 +8,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom: 50px">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: lavenderblush;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -26,6 +26,7 @@
                             <a href="javascript:document.getElementById('logout-form').submit();" class="logout-button">Logout</a>
                         </li>
                         <li>@Html.ActionLink("Households", "ViewHouseholds", "HouseholdApiHouseholds")</li>
+                        <li>@Html.ActionLink("Change Password", "ChangePassword", "HouseholdApiAccounts")</li>
                     }
                     else
                     {
@@ -84,7 +85,7 @@
             });
         </script>*@
 
-    <script>
+    @*<script>
         function LoginContentFetcher() {
             return fetch('../../@Url.Action("LoginApiConsumer", "HouseholdApiAccounts")', {
                 method: "Get"
@@ -116,6 +117,6 @@
             domelement.innerHTML = "";
             return domelement.insertAdjacentHTML('afterbegin', receivedElement);
         }
-    </script>
+    </script>*@
 </body>
 </html>

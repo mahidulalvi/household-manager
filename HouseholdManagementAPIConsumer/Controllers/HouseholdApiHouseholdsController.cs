@@ -21,21 +21,21 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
         // GET: HouseholdApiHouseholds
-        public ActionResult Index()
-        {
-            return View();
-        }
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
 
         [HttpGet]
         public ActionResult ViewHouseholds()
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHouseholds) && p.Method == "Get").Url;
-
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHouseholds) && p.Method == "Get").Url;            
 
             var token = cookie.Value;
 
@@ -69,13 +69,18 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpGet]
         public ActionResult ViewHousehold(string householdId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHousehold) && p.Method == "Get").Url += $"/{householdId}";
-
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            if(householdId == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHousehold) && p.Method == "Get").Url += $"/{householdId}";            
 
             var token = cookie.Value;
 
@@ -94,6 +99,16 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
+
+                if(TempData["HasErrored"] != null)
+                {
+                    ViewBag.HasErrored = TempData["HasErrored"];
+                }
+
+                if (TempData["NoSuchUser"] != null)
+                {
+                    ViewBag.NoSuchUser = TempData["NoSuchUser"];
+                }
 
                 return View(result);
             }
@@ -119,18 +134,20 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpPost]
         public ActionResult CreateHousehold(CreateHouseholdBindingModel formdata)
         {
-            if (formdata == null || !ModelState.IsValid)
-            {
-                return View(formdata);
-            }
-
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateHousehold) && p.Method == "Post").Url;
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+
+
+            if (formdata == null || !ModelState.IsValid)
+            {
+                return View(formdata);
+            }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateHousehold) && p.Method == "Post").Url;            
 
             var token = cookie.Value;
 
@@ -156,7 +173,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 //Convert the data back into an object                
 
-                return View("ViewCreatedHousehold", result);
+                return View("ViewHousehold", result);
             }
             else
             {
@@ -168,12 +185,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpGet]
         public ActionResult EditHousehold(string householdId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHousehold) && p.Method == "Get").Url += $"{householdId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditHousehold) && p.Method == "Get").Url += $"{householdId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
+            }
+
+            if(householdId == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
 
             var token = cookie.Value;
@@ -219,6 +241,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
+            }
+
+            if (householdId == null || formdata == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
 
             var token = cookie.Value;

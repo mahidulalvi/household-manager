@@ -35,22 +35,30 @@
     <!--===============================================================================================-->
 </head>
 <body>
+
+    @section scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
                 <form method="post" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+                    @Html.ValidationSummary(true)
                     <span class="login100-form-title">
                         Sign In
                     </span>
 
                     <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter username">
                         @Html.TextBoxFor(p => p.UserName, new { @class = "input100", placeholder = "Username" })
+                        @Html.ValidationMessageFor(input => input.UserName)
                         <span class="focus-input100"></span>
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Please enter password">
                         @*<input class="" type="password" name="pass" placeholder="Password">*@
                         @Html.PasswordFor(p => p.Password, new { @class = "input100", placeholder = "Password" })
+                        @Html.ValidationMessageFor(input => input.Password)
                         <span class="focus-input100"></span>
                     </div>
 

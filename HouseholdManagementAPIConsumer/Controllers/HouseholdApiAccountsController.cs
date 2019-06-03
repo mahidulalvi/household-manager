@@ -21,11 +21,6 @@ namespace HouseholdManagementAPIConsumer.Controllers
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
         }
 
-        // GET: HouseholdApiAccounts
-        public ActionResult Index()
-        {
-            return View();
-        }
 
         [HttpGet]
         public ActionResult RegisterApiConsumer()
@@ -183,7 +178,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
         [HttpPost]
-        public ActionResult LogoutApiConsumer(LoginBindingModel formdata)
+        public ActionResult LogoutApiConsumer()
         {
             var cookie = Request.Cookies.Get("LoginCookieForHouseholdAPI");
 
@@ -296,6 +291,70 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
+            else
+            {
+                ViewBag.HasErrored = true;
+                ViewBag.ResponseMessage = response.Content;
+                return View(formdata);
+            }
+        }
+
+
+        [HttpGet]        
+        public ActionResult ChangePassword()
+        {
+            var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
+            if (cookie == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }            
+
+            return View();
+        }
+
+
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePasswordBindingModel formdata)
+        {
+            var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
+            if (cookie == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+
+            if (formdata == null || !ModelState.IsValid)
+            {
+                return View(formdata);
+            }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ChangePassword) && p.Method == "Post").Url;
+
+            var token = cookie.Value;
+
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+            var parameters = new List<KeyValuePair<string, string>>();
+            parameters.Add(new KeyValuePair<string, string>("OldPassword", formdata.OldPassword));
+            parameters.Add(new KeyValuePair<string, string>("NewPassword", formdata.NewPassword));
+            parameters.Add(new KeyValuePair<string, string>("ConfirmPassword", formdata.ConfirmPassword));
+
+            var encodedValues = new FormUrlEncodedContent(parameters);
+
+            var response = httpClient.PostAsync(url, encodedValues).Result;
+
+            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                TempData["PasswordResetSuccessful"] = true;
+                return RedirectToAction("Index", "Home");
+            }
+            else if(response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
             {
                 //Display generic error message
                 return View("Error");

@@ -3,14 +3,15 @@
 
 @{
     ViewBag.Title = "_InviteHouseholdMember";
+    Layout = null;
 }
 
-<h2>_Invite Household Member</h2>
+<h2>Invite Household Member</h2>
 
 @if (ViewBag.HouseholdId != null)
 {
     <form method="post" action="@Url.Action("_InviteHouseholdMember", "HouseholdApiHouseholdMembers", new { householdId = ViewBag.HouseholdId })">
-        <div class="form-control">
+        <div class="form-group">
             @Html.LabelFor(p => p.Email)
             @Html.TextBoxFor(p => p.Email)
         </div>

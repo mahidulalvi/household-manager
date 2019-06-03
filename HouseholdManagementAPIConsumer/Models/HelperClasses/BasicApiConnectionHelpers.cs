@@ -104,6 +104,20 @@ namespace HouseholdManagementAPIConsumer.Models.HelperClasses
                     Name = "_ViewHouseholdMembers",
                     Method = "Get",
                     Url = $"{Domain}/api/HouseholdMembers/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ChangePassword",
+                    Method = "Post",
+                    Url = $"{Domain}/api/Account/ChangePassword"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditHousehold",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Households/EditHousehold/"
                 }
             };
         }

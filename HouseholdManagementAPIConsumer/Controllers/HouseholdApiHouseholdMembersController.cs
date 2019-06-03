@@ -21,10 +21,10 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
         // GET: HouseholdApiHouseholdMembers
-        public ActionResult Index()
-        {
-            return View();
-        }
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
 
 
         [HttpGet]
@@ -123,8 +123,10 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
             else
             {
-                ViewBag.HasErrored = true;
-                return View(formdata);
+                TempData["HasErrored"] = true;
+                TempData["NoSuchUser"] = true;
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new
+                { householdId = householdId });
             }            
         }
 

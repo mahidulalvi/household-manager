@@ -4,15 +4,22 @@
     ViewBag.Title = "ViewHousehold";
 }
 
+@if(ViewBag.NoSuchUser != null && ViewBag.NoSuchUser == true)
+{
+    <p style="color: blue; font-weight: bold">No user with that email!</p>
+}
+
+
 <h2>View Household</h2>
 
-<p>Hello!</p>
+@Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id }, htmlAttributes: null)
 
-@Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = "e08e44ea-76b9-4ec5-8d2d-79df315810a0" }, htmlAttributes: null)
 
-<form method="post" action="@Url.Action("LeaveHousehold", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })">
-    <button type="submit">Leave household</button>
-</form>
+<div>
+    <form method="post" action="@Url.Action("LeaveHousehold", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })">
+        <button type="submit" style="color: red">Leave household</button>
+    </form>
+</div>
 
 
 <p>@Html.DisplayForModel(Model)</p>
@@ -33,12 +40,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Invite member</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body invite-body">
 
             </div>
             <div class="modal-footer">
@@ -61,11 +68,11 @@
                         response.status);
                     return;
                 }
-                //console.log(response);
+                console.log(response);
 
                 response.text().then(function (data) {
-                    //console.log(data);
-                    DomAdder(data, ".modal-body");
+                    console.log(data);
+                    DomAdder(data);
                 });
             }
         )
@@ -77,8 +84,8 @@
 
 
 
-    function DomAdder(receivedElement, targetElementName) {
-        var domelement = document.querySelector(targetElementName);
+    function DomAdder(receivedElement) {
+        var domelement = document.querySelector(".invite-body");
         domelement.innerHTML = "";
         return domelement.insertAdjacentHTML('afterbegin', receivedElement);
     }
@@ -98,12 +105,18 @@
 
                 response.text().then(function (data) {
                     //console.log(data);
-                    DomAdder(data, "#viewMembersHolder");
+                    DomAdderForViewingMembers(data);
                 });
             }
         )
         .catch(function (err) {
                 console.log('Fetch Error :-S', err);
         });
+    }
+
+    function DomAdderForViewingMembers(receivedElement) {
+        var domelement2 = document.querySelector("#viewMembersHolder");
+        domelement2.innerHTML = "";
+        return domelement2.insertAdjacentHTML('afterbegin', receivedElement);
     }
 </script>
