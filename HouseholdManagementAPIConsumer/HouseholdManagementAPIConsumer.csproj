@@ -128,6 +128,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HouseholdApiAccountsController.cs" />
+    <Compile Include="Controllers\HouseholdApiCategoriesController.cs" />
     <Compile Include="Controllers\HouseholdApiHouseholdMembersController.cs" />
     <Compile Include="Controllers\HouseholdApiHouseholdsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -135,7 +136,11 @@
     </Compile>
     <Compile Include="Models\AccountDomain\AccountBindingModel.cs" />
     <Compile Include="Models\AccountDomain\ForgotPasswordResetViewModel.cs" />
+    <Compile Include="Models\Categories\CategoryViewModel.cs" />
+    <Compile Include="Models\Categories\CreateCategoryViewModel.cs" />
+    <Compile Include="Models\Categories\EditCategoryViewModel.cs" />
     <Compile Include="Models\ErrorModels\ErrorModel.cs" />
+    <Compile Include="Models\ErrorModels\ErrorModelCommons.cs" />
     <Compile Include="Models\HelperClasses\BasicApiConnectionHelpers.cs" />
     <Compile Include="Models\HelperClasses\HttpUrl.cs" />
     <Compile Include="Models\HouseholdMemberInvites\InviteHouseholdMemberBindingModel.cs" />
@@ -372,6 +377,10 @@
     <Content Include="TemplatesResources\RegisterTemplate\scss\layouts\responsive.scss" />
     <Content Include="TemplatesResources\RegisterTemplate\scss\style.scss" />
     <Content Include="Views\HouseholdApiAccounts\ChangePassword.cshtml" />
+    <Content Include="Views\HouseholdApiCategories\CreateCategory.cshtml" />
+    <Content Include="Views\HouseholdApiCategories\ViewCategory.cshtml" />
+    <Content Include="Views\HouseholdApiCategories\EditCategory.cshtml" />
+    <Content Include="Views\HouseholdApiCategories\ViewCategories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

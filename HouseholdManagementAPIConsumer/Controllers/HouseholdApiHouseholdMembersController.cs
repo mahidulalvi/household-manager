@@ -1,4 +1,5 @@
-﻿using HouseholdManagementAPIConsumer.Models.HelperClasses;
+﻿using HouseholdManagementAPIConsumer.Models.ErrorModels;
+using HouseholdManagementAPIConsumer.Models.HelperClasses;
 using HouseholdManagementAPIConsumer.Models.HouseholdMemberInvites;
 using HouseholdManagementAPIConsumer.Models.Households;
 using Newtonsoft.Json;
@@ -215,6 +216,16 @@ namespace HouseholdManagementAPIConsumer.Controllers
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+            else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var error = JsonConvert.DeserializeObject<ErrorModelCommons>(data);
+
+                TempData["CannotLeaveHousehold"] = error.Message;
+
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
             }
             else
             {

@@ -163,6 +163,16 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var error = JsonConvert.DeserializeObject<ErrorModel>(data);
+
+                ModelState.AddModelError("", error.ErrorDescription);
+
+                return View(formdata);
+            }
             else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
             {
                 //Display generic error message

@@ -1,4 +1,4 @@
-﻿using HouseholdManagementAPIConsumer.Models.ErrorModels;
+﻿using HouseholdManagementAPIConsumer.Models.Categories;
 using HouseholdManagementAPIConsumer.Models.HelperClasses;
 using HouseholdManagementAPIConsumer.Models.Households;
 using Newtonsoft.Json;
@@ -11,23 +11,26 @@ using System.Web.Mvc;
 
 namespace HouseholdManagementAPIConsumer.Controllers
 {
-    public class HouseholdApiHouseholdsController : Controller
+    public class HouseholdApiCategoriesController : Controller
     {
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
 
-        public HouseholdApiHouseholdsController()
+        public HouseholdApiCategoriesController()
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
         }
 
-        // GET: HouseholdApiHouseholds
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
+
+        // GET: HouseholdApiCategories
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
 
         [HttpGet]
-        public ActionResult ViewHouseholds()
+        public ActionResult ViewCategories(string householdId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -35,7 +38,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHouseholds) && p.Method == "Get").Url;            
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewCategories) && p.Method == "Get").Url + householdId + "/Categories";
 
             var token = cookie.Value;
 
@@ -45,7 +48,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.GetAsync(url).Result;
 
-            List<HouseholdViewModel> result;
+            List<CategoryViewModel> result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -53,7 +56,9 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<List<HouseholdViewModel>>(data);
+                result = JsonConvert.DeserializeObject<List<CategoryViewModel>>(data);
+
+
 
                 return View(result);
             }
@@ -66,8 +71,74 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet]
-        public ActionResult ViewHousehold(string householdId)
+        public ActionResult ViewCategory(string householdId, string categoryId)
+        {
+            var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
+            if (cookie == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (householdId == null || categoryId == null)
+            {
+                return RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
+            }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewCategory) && p.Method == "Get").Url += $"{householdId}/Categories/{categoryId}";
+
+            var token = cookie.Value;
+
+            var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+            var response = httpClient.GetAsync(url).Result;
+
+            CategoryViewModel result;
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                //Read the response
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                //Convert the data back into an object
+                result = JsonConvert.DeserializeObject<CategoryViewModel>(data);
+
+                return View(result);
+            }
+            else
+            {
+                ViewBag.HasErrored = true;
+                return View();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet]
+        public ActionResult CreateCategory(string householdId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -77,62 +148,24 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             if(householdId == null)
             {
-                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+                RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHousehold) && p.Method == "Get").Url += $"/{householdId}";            
-
-            var token = cookie.Value;
-
-            var httpClient = new HttpClient();
-
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-
-            var response = httpClient.GetAsync(url).Result;
-
-            HouseholdViewModel result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                //Read the response
-                var data = response.Content.ReadAsStringAsync().Result;
-
-                //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
-
-                if(TempData["HasErrored"] != null)
-                {
-                    ViewBag.HasErrored = TempData["HasErrored"];
-                }
-
-                if (TempData["NoSuchUser"] != null)
-                {
-                    ViewBag.NoSuchUser = TempData["NoSuchUser"];
-                }
-
-                return View(result);
-            }
-            else
-            {
-                ViewBag.HasErrored = true;
-                return View();
-            }
-        }        
-
-        [HttpGet]
-        public ActionResult CreateHousehold()
-        {
-            var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
-            if (cookie == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            ViewBag.HouseholdId = householdId;
 
             return View();
         }
 
+
+
+
+
+
+
+
+
         [HttpPost]
-        public ActionResult CreateHousehold(CreateHouseholdBindingModel formdata)
+        public ActionResult CreateCategory(string householdId, CreateCategoryViewModel formdata)
         {
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
@@ -142,12 +175,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
 
 
-            if (formdata == null || !ModelState.IsValid)
+            if (formdata == null || !ModelState.IsValid || householdId == null)
             {
                 return View(formdata);
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateHousehold) && p.Method == "Post").Url;            
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateCategory) && p.Method == "Post").Url + householdId;
 
             var token = cookie.Value;
 
@@ -162,18 +195,18 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.PostAsync(url, encodedValues).Result;
 
-            HouseholdViewModel result;
+            CategoryViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 //Read the response
                 var data = response.Content.ReadAsStringAsync().Result;
 
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
+                result = JsonConvert.DeserializeObject<CategoryViewModel>(data);
 
                 //Convert the data back into an object                
 
-                return View("ViewHousehold", result);
+                return View("ViewCategory", result);
             }
             else
             {
@@ -182,10 +215,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
         }
 
+
+
+
+
+
         [HttpGet]
-        public ActionResult EditHousehold(string householdId)
+        public ActionResult EditCategory(string categoryId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditHousehold) && p.Method == "Get").Url += $"{householdId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -193,10 +230,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if(householdId == null)
+            if (categoryId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Get").Url += $"{categoryId}";
+
 
             var token = cookie.Value;
 
@@ -206,7 +247,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.GetAsync(url).Result;
 
-            EditHouseholdBindingModel result;
+            EditCategoryViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -214,11 +255,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<EditHouseholdBindingModel>(data);
+                result = JsonConvert.DeserializeObject<EditCategoryViewModel>(data);
 
-                if(result == null)
+                if (result == null)
                 {
-                    ViewBag.NoHouseholds = true;
+                    ViewBag.NoCategory = true;
                     return View();
                 }
 
@@ -232,10 +273,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
 
+
+
+
+
+
+
+
         [HttpPost]
-        public ActionResult EditHousehold(string householdId, EditHouseholdBindingModel formdata)
+        public ActionResult EditCategory(string categoryId, EditCategoryViewModel formdata)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditHousehold) && p.Method == "Put").Url += $"{householdId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Put").Url += $"{categoryId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -243,7 +291,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (householdId == null || formdata == null)
+            if (categoryId == null || formdata == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
@@ -261,7 +309,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.PutAsync(url, encodedValues).Result;
 
-            HouseholdViewModel result;
+            CategoryViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -269,9 +317,9 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);                
+                result = JsonConvert.DeserializeObject<CategoryViewModel>(data);
 
-                return View("ViewHousehold", result);
+                return View("ViewCategory", result);
             }
             else
             {
@@ -285,9 +333,9 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteHousehold(string householdId)
+        public ActionResult DeleteCategory(string categoryId, string householdId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteHousehold) && p.Method == "Delete").Url += $"{householdId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteCategory) && p.Method == "Delete").Url += $"{categoryId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -295,10 +343,15 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (householdId == null)
+            if (categoryId == null)
+            {
+                return RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
+            }
+            if(householdId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+
 
             var token = cookie.Value;
 
@@ -306,25 +359,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-            //var parameters = new List<KeyValuePair<string, string>>();
-            //parameters.Add(new KeyValuePair<string, string>("Name", householdId));
-            //var encodedValues = new FormUrlEncodedContent(parameters);
-
             var response = httpClient.DeleteAsync(url).Result;
 
-            //HouseholdViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                //Read the response
-                //var data = response.Content.ReadAsStringAsync().Result;
-
-                ////Convert the data back into an object
-                //result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
-
-                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
             }
-            else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 TempData["NoSuchHousehold"] = true;
 

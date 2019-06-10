@@ -118,6 +118,56 @@ namespace HouseholdManagementAPIConsumer.Models.HelperClasses
                     Name = "EditHousehold",
                     Method = "Get",
                     Url = $"{Domain}/api/Households/EditHousehold/"
+                },
+
+
+                new HttpUrl
+                {
+                    Name = "DeleteHousehold",
+                    Method = "Delete",
+                    Url = $"{Domain}/api/Households/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewCategories",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Categories/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewCategory",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Categories/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "CreateCategory",
+                    Method = "Post",
+                    Url = $"{Domain}/api/Categories/CreateCategory/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditCategory",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Categories/Categories/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditCategory",
+                    Method = "Put",
+                    Url = $"{Domain}/api/Categories/EditCategory/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "DeleteCategory",
+                    Method = "Delete",
+                    Url = $"{Domain}/api/Categories/DeleteCategory/"
                 }
             };
         }
