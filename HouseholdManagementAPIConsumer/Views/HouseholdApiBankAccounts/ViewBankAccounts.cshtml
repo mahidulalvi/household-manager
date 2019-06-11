@@ -1,4 +1,5 @@
-﻿@model List<CategoryViewModel>
+﻿@model List<BankAccountViewModel>
+
 @{
     Layout = null;
 }
@@ -8,7 +9,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>ViewCategories</title>
+    <title>ViewBankAccounts</title>
 </head>
 <body>
     <div>
@@ -20,7 +21,7 @@
         {
             for (var i = 0; i < Model.Count(); i++)
             {
-                <p>@Html.ActionLink(Model[i].Name, "ViewCategory", "HouseholdApiCategories", routeValues: new { householdId = Model[i].HouseholdId, categoryId = Model[i].Id }, htmlAttributes: null)</p>
+                <p>@Html.ActionLink(Model[i].Name, "ViewBankAccount", "HouseholdApiBankAccounts", routeValues: new { householdId = Model[i].HouseholdId, bankAccountId = Model[i].Id }, htmlAttributes: null)</p>
             }
         }
     </div>

@@ -66,10 +66,10 @@ else
                 </div>
 
 
-                <a class="btn create-category-button" style="padding-left: 0" data-toggle="modal" href="#createCategoryModal" onclick="CreateCategoryFetcher()">Create Category</a>
+                @*<a class="btn create-category-button" style="padding-left: 0" data-toggle="modal" href="#createCategoryModal" onclick="CreateCategoryFetcher()">Create Category</a>*@
 
                 <!-- Modal -->
-                <div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                @*<div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -86,7 +86,7 @@ else
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*@
 
                 <p>
                     @Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id }, htmlAttributes: null)
@@ -124,6 +124,16 @@ else
                     <p><a href="@Url.Action("CreateCategory", "HouseholdApiCategories", new { householdId = Model.Id })">Create Category</a></p>
                     <div>
                         @{ Html.RenderAction("ViewCategories", "HouseholdApiCategories", routeValues: new { householdId = Model.Id });
+                        }
+                    </div>
+                </div>
+                <div>
+                    <p style="font-weight: bold; font-size: 1.5em">Accounts</p>
+
+                    <p><a href="@Url.Action("CreateBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.Id })">Create Bank Account</a></p>
+
+                    <div>
+                        @{ Html.RenderAction("ViewBankAccounts", "HouseholdApiBankAccounts", routeValues: new { householdId = Model.Id });
                         }
                     </div>
                 </div>

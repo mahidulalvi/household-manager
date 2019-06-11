@@ -1,6 +1,5 @@
-﻿using HouseholdManagementAPIConsumer.Models.ErrorModels;
+﻿using HouseholdManagementAPIConsumer.Models.BankAccounts;
 using HouseholdManagementAPIConsumer.Models.HelperClasses;
-using HouseholdManagementAPIConsumer.Models.Households;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,23 +10,28 @@ using System.Web.Mvc;
 
 namespace HouseholdManagementAPIConsumer.Controllers
 {
-    public class HouseholdApiHouseholdsController : Controller
+    public class HouseholdApiBankAccountsController : Controller
     {
+        // GET: HouseholdApiBankAccounts
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
+
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
 
-        public HouseholdApiHouseholdsController()
+        public HouseholdApiBankAccountsController()
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
         }
 
-        // GET: HouseholdApiHouseholds
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
+
+
 
         [HttpGet]
-        public ActionResult ViewHouseholds()
+        public ActionResult ViewBankAccounts(string householdId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -35,7 +39,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHouseholds) && p.Method == "Get").Url;            
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewBankAccounts) && p.Method == "Get").Url + householdId;
 
             var token = cookie.Value;
 
@@ -45,7 +49,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.GetAsync(url).Result;
 
-            List<HouseholdViewModel> result;
+            List<BankAccountViewModel> result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -53,7 +57,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<List<HouseholdViewModel>>(data);
+                result = JsonConvert.DeserializeObject<List<BankAccountViewModel>>(data);
 
                 return View(result);
             }
@@ -66,8 +70,19 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet]
-        public ActionResult ViewHousehold(string householdId)
+        public ActionResult ViewBankAccount(string householdId, string bankAccountId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -75,12 +90,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if(householdId == null)
+            if (householdId == null || bankAccountId == null)
             {
-                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewHousehold) && p.Method == "Get").Url + $"/{householdId}";            
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewBankAccount) && p.Method == "Get").Url + $"{householdId}/{bankAccountId}";
 
             var token = cookie.Value;
 
@@ -90,7 +105,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.GetAsync(url).Result;
 
-            HouseholdViewModel result;
+            BankAccountViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -98,17 +113,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
-
-                if(TempData["HasErrored"] != null)
-                {
-                    ViewBag.HasErrored = TempData["HasErrored"];
-                }
-
-                if (TempData["NoSuchUser"] != null)
-                {
-                    ViewBag.NoSuchUser = TempData["NoSuchUser"];
-                }
+                result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
                 return View(result);
             }
@@ -117,24 +122,50 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 ViewBag.HasErrored = true;
                 return View();
             }
-        }        
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         [HttpGet]
-        public ActionResult CreateHousehold()
+        public ActionResult CreateBankAccount(string householdId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            if (householdId == null)
+            {
+                RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+
+            
 
             return View();
         }
 
-        [HttpPost]
-        public ActionResult CreateHousehold(CreateHouseholdBindingModel formdata)
-        {
 
+
+
+
+
+
+
+
+        [HttpPost]
+        public ActionResult CreateBankAccount(string householdId, CreateBankAccountViewModel formdata)
+        {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
@@ -142,12 +173,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
 
 
-            if (formdata == null || !ModelState.IsValid)
+            if (formdata == null || !ModelState.IsValid || householdId == null)
             {
                 return View(formdata);
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateHousehold) && p.Method == "Post").Url;            
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(CreateBankAccount) && p.Method == "Post").Url + householdId;
 
             var token = cookie.Value;
 
@@ -162,18 +193,18 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.PostAsync(url, encodedValues).Result;
 
-            HouseholdViewModel result;
+            BankAccountViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 //Read the response
                 var data = response.Content.ReadAsStringAsync().Result;
 
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
+                result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
                 //Convert the data back into an object                
 
-                return View("ViewHousehold", result);
+                return View("ViewBankAccount", result);
             }
             else
             {
@@ -182,10 +213,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
         }
 
+
+
+
+
+
         [HttpGet]
-        public ActionResult EditHousehold(string householdId)
+        public ActionResult EditBankAccount(string householdId, string bankAccountId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditHousehold) && p.Method == "Get").Url + $"{householdId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -193,10 +228,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if(householdId == null)
+            if (householdId == null || bankAccountId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditBankAccount) && p.Method == "Get").Url + $"{householdId}/{bankAccountId}";
+
 
             var token = cookie.Value;
 
@@ -206,7 +245,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.GetAsync(url).Result;
 
-            EditHouseholdBindingModel result;
+            EditBankAccountViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -214,11 +253,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<EditHouseholdBindingModel>(data);
+                result = JsonConvert.DeserializeObject<EditBankAccountViewModel>(data);
 
-                if(result == null)
+                if (result == null)
                 {
-                    ViewBag.NoHouseholds = true;
+                    ViewBag.NoCategory = true;
                     return View();
                 }
 
@@ -232,10 +271,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
         }
 
 
+
+
+
+
+
+
+
         [HttpPost]
-        public ActionResult EditHousehold(string householdId, EditHouseholdBindingModel formdata)
+        public ActionResult EditBankAccount(string bankAccountId, EditBankAccountViewModel formdata)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditHousehold) && p.Method == "Put").Url + $"{householdId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditBankAccount) && p.Method == "Put").Url + $"{bankAccountId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -243,7 +289,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (householdId == null || formdata == null)
+            if (bankAccountId == null || formdata == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
@@ -261,17 +307,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             var response = httpClient.PutAsync(url, encodedValues).Result;
 
-            HouseholdViewModel result;
+            BankAccountViewModel result;
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 //Read the response
                 var data = response.Content.ReadAsStringAsync().Result;
 
                 //Convert the data back into an object
-                result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);                
+                result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
-                return View("ViewHousehold", result);
+                return View("ViewBankAccount", result);
             }
             else
             {
@@ -284,10 +330,13 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
 
+
+
+
+
         [HttpPost]
-        public ActionResult DeleteHousehold(string householdId)
+        public ActionResult UpdateBankAccountBalance(string bankAccountId, string householdId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteHousehold) && p.Method == "Delete").Url + $"{householdId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -295,10 +344,72 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+
+            if(householdId == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+            if (bankAccountId == null)
+            {
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(UpdateBankAccountBalance) && p.Method == "Put").Url + $"{bankAccountId}/CalculateAccountBalance";
+
+            var token = cookie.Value;
+
+            var httpClient = new HttpClient();
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");            
+
+            var response = httpClient.PutAsync(url, null).Result;
+
+            BankAccountViewModel result;
+
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                //Read the response
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                //Convert the data back into an object
+                result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
+
+                return View("ViewBankAccount", result);
+            }
+            else
+            {
+                ViewBag.HasErrored = true;
+                return RedirectToAction("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = householdId, bankAccountId = bankAccountId });
+            }
+        }
+
+
+
+
+
+
+
+        [HttpPost]
+        public ActionResult DeleteBankAccount(string bankAccountId, string householdId)
+        {
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteBankAccount) && p.Method == "Delete").Url + $"{bankAccountId}";
+
+            var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
+            if (cookie == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (bankAccountId == null)
+            {
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
             if (householdId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+
 
             var token = cookie.Value;
 
@@ -306,25 +417,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-            //var parameters = new List<KeyValuePair<string, string>>();
-            //parameters.Add(new KeyValuePair<string, string>("Name", householdId));
-            //var encodedValues = new FormUrlEncodedContent(parameters);
-
             var response = httpClient.DeleteAsync(url).Result;
 
-            //HouseholdViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                //Read the response
-                //var data = response.Content.ReadAsStringAsync().Result;
-
-                ////Convert the data back into an object
-                //result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
-
-                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
             }
-            else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 TempData["NoSuchHousehold"] = true;
 

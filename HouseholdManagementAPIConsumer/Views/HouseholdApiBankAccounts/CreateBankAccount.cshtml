@@ -1,0 +1,33 @@
+﻿@model CreateBankAccountViewModel
+
+@{
+    ViewBag.Title = "CreateBankAccount";
+}
+
+<h2>Create Bank Account</h2>
+
+@if(ViewBag.HasErrored != null && ViewBag.HasErrored == true)
+{
+    <p>Something's not right. Please try again</p>
+}
+
+
+<form method="post">
+    <div class="form-group">
+        <p>
+            @Html.LabelFor(p => p.Name, new { @class = "text-info" })
+        </p>
+        @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <p>
+            @Html.LabelFor(p => p.Description, new { @class = "text-info" })
+        </p>
+        @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <button type="submit">Submit</button>
+    </div>
+</form>

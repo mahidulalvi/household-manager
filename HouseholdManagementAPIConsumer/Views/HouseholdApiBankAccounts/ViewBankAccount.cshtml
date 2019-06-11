@@ -1,0 +1,30 @@
+﻿@model BankAccountViewModel
+
+@{
+    ViewBag.Title = "ViewBankAccount";
+}
+
+<h2>View Bank Account</h2>
+
+<div>
+    <p><span style="font-weight: bold">Name:</span> @Model.Name</p>
+    <p><span style="font-weight: bold">Description:</span> @Model.Description</p>
+    <p><span style="font-weight: bold">Created:</span> @Model.DateCreated</p>
+    @if (Model.DateUpdated != null)
+    {
+        <p><span style="font-weight: bold">Updated:</span> @Model.DateUpdated</p>
+    }
+    <p><span style="font-weight: bold">Balance:</span> $@Model.Balance</p>
+    <p><span style="font-weight: bold">Household:</span> @Model.HouseholdName</p>
+
+    <form method="post" action="@Url.Action("UpdateBankAccountBalance", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
+        <button type="submit">Update Balance</button>
+    </form>
+
+
+    <a href="@Url.Action("EditBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.HouseholdId, bankAccountId = Model.Id })">Edit</a>
+
+    <form method="post" action="@Url.Action("DeleteBankAccount", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
+        <button type="submit">Delete</button>
+    </form>
+</div>

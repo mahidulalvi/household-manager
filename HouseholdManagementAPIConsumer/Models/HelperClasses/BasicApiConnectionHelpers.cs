@@ -168,6 +168,69 @@ namespace HouseholdManagementAPIConsumer.Models.HelperClasses
                     Name = "DeleteCategory",
                     Method = "Delete",
                     Url = $"{Domain}/api/Categories/DeleteCategory/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewBankAccounts",
+                    Method = "Get",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewBankAccount",
+                    Method = "Get",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "CreateBankAccount",
+                    Method = "Post",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditBankAccount",
+                    Method = "Get",
+                    Url = $"{Domain}/api/BankAccounts/Edit/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditBankAccount",
+                    Method = "Put",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "DeleteBankAccount",
+                    Method = "Delete",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "UpdateBankAccountBalance",
+                    Method = "Put",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewTransactions",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Transactions/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ViewTransaction",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Transactions/"
                 }
             };
         }

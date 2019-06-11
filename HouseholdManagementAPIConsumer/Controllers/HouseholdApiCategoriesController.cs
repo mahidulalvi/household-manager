@@ -91,12 +91,16 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (householdId == null || categoryId == null)
+            if (householdId == null)
             {
-                return RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            if(categoryId == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewCategory) && p.Method == "Get").Url += $"{householdId}/Categories/{categoryId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(ViewCategory) && p.Method == "Get").Url + $"{householdId}/Categories/{categoryId}";
 
             var token = cookie.Value;
 
@@ -148,7 +152,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             if(householdId == null)
             {
-                RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
+                RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
 
             ViewBag.HouseholdId = householdId;
@@ -236,7 +240,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
 
 
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Get").Url += $"{categoryId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Get").Url + $"{categoryId}";
 
 
             var token = cookie.Value;
@@ -283,7 +287,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpPost]
         public ActionResult EditCategory(string categoryId, EditCategoryViewModel formdata)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Put").Url += $"{categoryId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Put").Url + $"{categoryId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -335,7 +339,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpPost]
         public ActionResult DeleteCategory(string categoryId, string householdId)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteCategory) && p.Method == "Delete").Url += $"{categoryId}";
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(DeleteCategory) && p.Method == "Delete").Url + $"{categoryId}";
 
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
@@ -345,7 +349,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             if (categoryId == null)
             {
-                return RedirectToAction("ViewCategories", "HouseholdApiCategories", new { householdId = householdId });
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
             }
             if(householdId == null)
             {

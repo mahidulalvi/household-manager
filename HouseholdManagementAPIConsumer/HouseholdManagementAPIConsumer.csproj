@@ -128,14 +128,19 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HouseholdApiAccountsController.cs" />
+    <Compile Include="Controllers\HouseholdApiBankAccountsController.cs" />
     <Compile Include="Controllers\HouseholdApiCategoriesController.cs" />
     <Compile Include="Controllers\HouseholdApiHouseholdMembersController.cs" />
     <Compile Include="Controllers\HouseholdApiHouseholdsController.cs" />
+    <Compile Include="Controllers\HouseholdApiTransactionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountDomain\AccountBindingModel.cs" />
     <Compile Include="Models\AccountDomain\ForgotPasswordResetViewModel.cs" />
+    <Compile Include="Models\BankAccounts\BankAccountViewModel.cs" />
+    <Compile Include="Models\BankAccounts\CreateBankAccountViewModel.cs" />
+    <Compile Include="Models\BankAccounts\EditBankAccountViewModel.cs" />
     <Compile Include="Models\Categories\CategoryViewModel.cs" />
     <Compile Include="Models\Categories\CreateCategoryViewModel.cs" />
     <Compile Include="Models\Categories\EditCategoryViewModel.cs" />
@@ -149,6 +154,7 @@
     <Compile Include="Models\Households\EditHouseholdBindingModel.cs" />
     <Compile Include="Models\Households\HouseholdMember.cs" />
     <Compile Include="Models\Households\HouseholdViewModel.cs" />
+    <Compile Include="Models\Transactions\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -381,10 +387,15 @@
     <Content Include="Views\HouseholdApiCategories\ViewCategory.cshtml" />
     <Content Include="Views\HouseholdApiCategories\EditCategory.cshtml" />
     <Content Include="Views\HouseholdApiCategories\ViewCategories.cshtml" />
+    <Content Include="Views\HouseholdApiBankAccounts\ViewBankAccounts.cshtml" />
+    <Content Include="Views\HouseholdApiBankAccounts\ViewBankAccount.cshtml" />
+    <Content Include="Views\HouseholdApiBankAccounts\CreateBankAccount.cshtml" />
+    <Content Include="Views\HouseholdApiBankAccounts\EditBankAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="TemplatesResources\Mydesign\css\" />
+    <Folder Include="Views\HouseholdApiTransactions\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
