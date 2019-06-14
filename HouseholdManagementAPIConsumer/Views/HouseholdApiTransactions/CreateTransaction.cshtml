@@ -1,14 +1,14 @@
 ﻿@model CreateTransactionViewModel
 
 @{
+    /**/
+
     ViewBag.Title = "CreateTransaction";
 }
 
 @section scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-
-
 
 
 <h2>Create Transaction</h2>
@@ -25,62 +25,68 @@ else
     }
     else
     {
+        <div id="form-holder">
+            <form method="post">
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    <p>
+                        @Html.LabelFor(p => p.Title, new { @class = "text-info" })
+                    </p>
+                    @Html.ValidationMessageFor(p => p.Title)
+                    @Html.TextBoxFor(p => p.Title, new { @class = "form-control" })
+                </div>
 
-        <form method="post">
-            @Html.ValidationSummary(true)
-            <div class="form-group">
-                <p>
-                    @Html.LabelFor(p => p.Title, new { @class = "text-info" })
-                </p>
-                @Html.ValidationMessageFor(p => p.Title)
-                @Html.TextBoxFor(p => p.Title, new { @class = "form-control" })
-            </div>
+                <div class="form-group">
+                    <p>
+                        @Html.LabelFor(p => p.Description, new { @class = "text-info" })
+                    </p>
+                    @Html.ValidationMessageFor(p => p.Description)
+                    @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+                </div>
 
-            <div class="form-group">
-                <p>
-                    @Html.LabelFor(p => p.Description, new { @class = "text-info" })
-                </p>
-                @Html.ValidationMessageFor(p => p.Description)
-                @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
-            </div>
+                <div class="form-group">
+                    <p>
+                        @Html.LabelFor(p => p.CategoryId, new { @class = "text-info" })
+                    </p>
+                    @*@Html.DropDownListFor(p => p.CategoryId, new SelectList(ViewBag.DropDownListForCategoryIds), "Select Category", new { @class = "form-control" })*@
 
-            <div class="form-group">
-                <p>
-                    @Html.LabelFor(p => p.CategoryId, new { @class = "text-info" })
-                </p>
-                @*@Html.DropDownListFor(p => p.CategoryId, new SelectList(ViewBag.DropDownListForCategoryIds), "Select Category", new { @class = "form-control" })*@
+                    @*@Html.ListBoxFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", new HtmlSelectListClassForCategory { Id = null, Name = "Select Category" }), new { @style = "width:200px;height:60px;" })*@
 
-                @*@Html.ListBoxFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", new HtmlSelectListClassForCategory { Id = null, Name = "Select Category" }), new { @style = "width:200px;height:60px;" })*@
+                    @Html.ValidationMessageFor(p => p.CategoryId, "Category is required")
+                    @Html.DropDownListFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", ""))
+                    @*@Html.DropDownListFor(p => p.CategoryId, ViewBag.ListBoxForCategoryIds as SelectList)*@
 
-                @Html.ValidationMessageFor(p => p.CategoryId, "Category is required")
-                @Html.DropDownListFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", ""))
-                @*@Html.DropDownListFor(p => p.CategoryId, ViewBag.ListBoxForCategoryIds as SelectList)*@
+                    @*Html.ListBoxFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", ""))*@
 
-                @*Html.ListBoxFor(p => p.CategoryId, new SelectList(ViewBag.ListBoxForCategoryIds, "Value", "Text", ""))*@
+                </div>
 
-            </div>
+                <div class="form-group">
+                    <p>
+                        @Html.LabelFor(p => p.Amount, new { @class = "text-info" })
+                    </p>
+                    @Html.ValidationMessageFor(p => p.Amount)
+                    @Html.TextAreaFor(p => p.Amount, new { @class = "form-control" })
+                </div>
 
-            <div class="form-group">
-                <p>
-                    @Html.LabelFor(p => p.Amount, new { @class = "text-info" })
-                </p>
-                @Html.ValidationMessageFor(p => p.Amount)
-                @Html.TextAreaFor(p => p.Amount, new { @class = "form-control" })
-            </div>
-
-            <div class="form-group">
-                <p>
-                    @Html.LabelFor(p => p.Date, new { @class = "text-info" })
-                </p>
-                @Html.ValidationMessageFor(p => p.Date)
-                @Html.TextAreaFor(p => p.Date, new { @class = "form-control" })
-            </div>
+                <div class="form-group dateInputDiv">
+                    <p>
+                        @Html.LabelFor(p => p.Date, new { @class = "text-info" })
+                    </p>
+                    @Html.ValidationMessageFor(p => p.Date)
+                    @Html.TextBoxFor(p => p.Date, new { @class = "form-control", id = "transactionDate", placeholder = "MM/DD/YYYY" })
+                </div>
 
 
-            <div class="form-group">
-                <button type="submit">Submit</button>
-            </div>
-        </form>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+
+
+
+
+        
 
     }
 }
