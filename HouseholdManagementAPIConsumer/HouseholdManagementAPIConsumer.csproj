@@ -144,6 +144,9 @@
     <Compile Include="Models\Categories\CategoryViewModel.cs" />
     <Compile Include="Models\Categories\CreateCategoryViewModel.cs" />
     <Compile Include="Models\Categories\EditCategoryViewModel.cs" />
+    <Compile Include="Models\Categories\HtmlSelectListClassForCategory.cs" />
+    <Compile Include="Models\ErrorModels\ApiError.cs" />
+    <Compile Include="Models\ErrorModels\CreateCategoryErrorModel.cs" />
     <Compile Include="Models\ErrorModels\ErrorModel.cs" />
     <Compile Include="Models\ErrorModels\ErrorModelCommons.cs" />
     <Compile Include="Models\HelperClasses\BasicApiConnectionHelpers.cs" />
@@ -154,6 +157,10 @@
     <Compile Include="Models\Households\EditHouseholdBindingModel.cs" />
     <Compile Include="Models\Households\HouseholdMember.cs" />
     <Compile Include="Models\Households\HouseholdViewModel.cs" />
+    <Compile Include="Models\Households\StatModel.cs" />
+    <Compile Include="Models\Transactions\AlternativeCreateTransactionViewModel.cs" />
+    <Compile Include="Models\Transactions\CreateTransactionViewModel.cs" />
+    <Compile Include="Models\Transactions\EditTransactionViewModel.cs" />
     <Compile Include="Models\Transactions\TransactionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -391,11 +398,15 @@
     <Content Include="Views\HouseholdApiBankAccounts\ViewBankAccount.cshtml" />
     <Content Include="Views\HouseholdApiBankAccounts\CreateBankAccount.cshtml" />
     <Content Include="Views\HouseholdApiBankAccounts\EditBankAccount.cshtml" />
+    <Content Include="Views\HouseholdApiTransactions\ViewTransactions.cshtml" />
+    <Content Include="Views\HouseholdApiTransactions\ViewTransaction.cshtml" />
+    <Content Include="Views\HouseholdApiTransactions\CreateTransaction.cshtml" />
+    <Content Include="Views\HouseholdApiTransactions\EditTransaction.cshtml" />
+    <Content Include="Views\HouseholdApiHouseholds\GetStats.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="TemplatesResources\Mydesign\css\" />
-    <Folder Include="Views\HouseholdApiTransactions\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

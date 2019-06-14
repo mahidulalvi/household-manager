@@ -1,4 +1,5 @@
 ﻿using HouseholdManagementAPIConsumer.Models.BankAccounts;
+using HouseholdManagementAPIConsumer.Models.ErrorModels;
 using HouseholdManagementAPIConsumer.Models.HelperClasses;
 using Newtonsoft.Json;
 using System;
@@ -11,15 +12,7 @@ using System.Web.Mvc;
 namespace HouseholdManagementAPIConsumer.Controllers
 {
     public class HouseholdApiBankAccountsController : Controller
-    {
-        // GET: HouseholdApiBankAccounts
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-
-
+    {        
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
 
         public HouseholdApiBankAccountsController()
@@ -61,6 +54,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return View(result);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
@@ -82,6 +80,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
         [HttpGet]
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
         public ActionResult ViewBankAccount(string householdId, string bankAccountId)
         {
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
@@ -116,6 +115,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
                 return View(result);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -173,7 +177,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
 
 
-            if (formdata == null || !ModelState.IsValid || householdId == null)
+            if(householdId == null)
+            {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+            if (formdata == null || !ModelState.IsValid)
             {
                 return View(formdata);
             }
@@ -204,7 +212,28 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 //Convert the data back into an object                
 
-                return View("ViewBankAccount", result);
+                return RedirectToAction("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = result.HouseholdId, bankAccountId = result.Id });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var errors = JsonConvert.DeserializeObject<ApiError>(data);
+
+                foreach (var key in errors.ModelState)
+                {
+                    foreach (var error in key.Value)
+                    {
+                        ModelState.AddModelError(key.Key, error);
+                    }
+                }
+
+                return View(formdata);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -263,6 +292,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return View(result);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
@@ -279,7 +313,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
         [HttpPost]
-        public ActionResult EditBankAccount(string bankAccountId, EditBankAccountViewModel formdata)
+        public ActionResult EditBankAccount(string householdId, string bankAccountId, EditBankAccountViewModel formdata)
         {
             var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditBankAccount) && p.Method == "Put").Url + $"{bankAccountId}";
 
@@ -289,9 +323,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (bankAccountId == null || formdata == null)
+            if(householdId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+            if (bankAccountId == null)
+            {
+                return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            if(formdata == null || !ModelState.IsValid)
+            {
+                return View(formdata);
             }
 
             var token = cookie.Value;
@@ -317,7 +359,28 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
-                return View("ViewBankAccount", result);
+                return RedirectToAction("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = result.HouseholdId, bankAccountId = result.Id });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var errors = JsonConvert.DeserializeObject<ApiError>(data);
+
+                foreach (var key in errors.ModelState)
+                {
+                    foreach (var error in key.Value)
+                    {
+                        ModelState.AddModelError(key.Key, error);
+                    }
+                }
+
+                return View(formdata);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -375,7 +438,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<BankAccountViewModel>(data);
 
-                return View("ViewBankAccount", result);
+                return RedirectToAction("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = result.HouseholdId, bankAccountId = result.Id });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -429,6 +497,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 TempData["NoSuchHousehold"] = true;
 
                 return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {

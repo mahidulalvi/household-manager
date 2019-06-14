@@ -1,0 +1,73 @@
+﻿@model List<TransactionViewModel>
+
+@{
+    ViewBag.Title = "ViewTransactions";
+    Layout = null;
+}
+
+<h2>View Transactions</h2>
+
+@if (TempData["BadRequestErrorMessage"] != null)
+{
+    <p style="color: red">@TempData["BadRequestErrorMessage"]</p>
+}
+else
+{
+    <div style="margin-bottom: 20px">
+        <a href="@Url.Action("CreateTransaction", "HouseholdApiTransactions", new { householdId = ViewBag.HouseholdId, bankAccountId = ViewBag.BankAccountId })">Create Transaction</a>
+    </div>
+
+    <div>
+        @if (Model.Any())
+        {
+            <table id="transactions-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>By</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var element in Model)
+                    {
+                        <tr>
+                            <td>@(Model.IndexOf(element) + 1)</td>
+                            <td>@element.Date</td>
+                            <td>
+                                <a href="@Url.Action("ViewTransaction", "HouseholdApiTransactions", new { transactionId = element.Id, bankAccountId = element.BankAccountId, householdId = ViewBag.HouseholdId })">@element.Title</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("ViewCategory", "HouseholdApiCategories", new { householdId = ViewBag.HouseholdId, categoryId = element.CategoryId })">
+                                    @element.CategoryName
+                                </a>
+                            </td>
+                            <td>
+                                @element.TransactionOwnerUserName
+                            </td>
+                            <td>
+                                @element.Amount
+                            </td>
+                            <td>
+                                <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = element.Id, bankAccountId = element.BankAccountId, householdId = ViewBag.HouseholdId })">
+                                    @if (element.IsTransactionVoid)
+                                    {
+                                        <p>Void <input style="margin-left: 20px;" type="submit" value="Validate" /></p>
+                                    }
+                                    else
+                                    {
+                                        <p>Valid <input style="margin-left: 20px;" type="submit" value="Void" /></p>
+                                    }
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}

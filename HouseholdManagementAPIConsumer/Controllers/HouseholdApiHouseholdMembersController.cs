@@ -21,12 +21,6 @@ namespace HouseholdManagementAPIConsumer.Controllers
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
         }
 
-        // GET: HouseholdApiHouseholdMembers
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
 
         [HttpGet]
         public ActionResult _ViewHouseholdMembers(string householdId)
@@ -63,6 +57,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 result = JsonConvert.DeserializeObject<List<HouseholdMember>>(data);
                 
                 return View(result);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -121,6 +120,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {                                
                 return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -182,6 +186,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
@@ -226,6 +235,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 TempData["CannotLeaveHousehold"] = error.Message;
 
                 return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {

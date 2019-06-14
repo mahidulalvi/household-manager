@@ -4,6 +4,11 @@
     ViewBag.Title = "CreateCategory";
 }
 
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
 <h2>Create Category</h2>
 
 
@@ -15,10 +20,12 @@
 
 
 <form method="post">
+    @Html.ValidationSummary(true)
     <div class="form-group">
         <p>
             @Html.LabelFor(p => p.Name, new { @class = "text-info" })
         </p>
+        @Html.ValidationMessageFor(p => p.Name)
         @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
     </div>
 
@@ -26,6 +33,7 @@
         <p>
             @Html.LabelFor(p => p.Description, new { @class = "text-info" })
         </p>
+        @Html.ValidationMessageFor(p => p.Description)
         @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
     </div>
 

@@ -1,4 +1,5 @@
 ﻿using HouseholdManagementAPIConsumer.Models.Categories;
+using HouseholdManagementAPIConsumer.Models.ErrorModels;
 using HouseholdManagementAPIConsumer.Models.HelperClasses;
 using HouseholdManagementAPIConsumer.Models.Households;
 using Newtonsoft.Json;
@@ -19,15 +20,6 @@ namespace HouseholdManagementAPIConsumer.Controllers
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
         }
-
-
-        // GET: HouseholdApiCategories
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-
 
         [HttpGet]
         public ActionResult ViewCategories(string householdId)
@@ -62,6 +54,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return View(result);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
@@ -69,17 +66,6 @@ namespace HouseholdManagementAPIConsumer.Controllers
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
         [HttpGet]
@@ -122,23 +108,17 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return View(result);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
                 return View();
             }
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
         [HttpGet]
@@ -152,7 +132,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             if(householdId == null)
             {
-                RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
 
             ViewBag.HouseholdId = householdId;
@@ -178,9 +158,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
-            if (formdata == null || !ModelState.IsValid || householdId == null)
+            if(householdId == null)
             {
+                return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
+            }
+
+            if (formdata == null || !ModelState.IsValid)
+            {
+                ViewBag.HouseholdId = householdId;
                 return View(formdata);
             }
 
@@ -210,10 +195,34 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 //Convert the data back into an object                
 
-                return View("ViewCategory", result);
+                return RedirectToAction("ViewCategory", "HouseholdApiCategories", new { householdId = result.HouseholdId, categoryId = result.Id });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var errors = JsonConvert.DeserializeObject<ApiError>(data);
+
+                foreach (var key in errors.ModelState)
+                {
+                    foreach (var error in key.Value)
+                    {
+                        ModelState.AddModelError(key.Key, error);
+                    }
+                }
+
+                ViewBag.HouseholdId = householdId;
+
+                return View(formdata);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
+                ViewBag.HouseholdId = householdId;
                 ViewBag.HasErrored = true;
                 return View();
             }
@@ -269,6 +278,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 return View(result);
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
+            }
             else
             {
                 ViewBag.HasErrored = true;
@@ -287,18 +301,23 @@ namespace HouseholdManagementAPIConsumer.Controllers
         [HttpPost]
         public ActionResult EditCategory(string categoryId, EditCategoryViewModel formdata)
         {
-            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Put").Url + $"{categoryId}";
-
             var cookie = Request.Cookies["LoginCookieForHouseholdApi"];
             if (cookie == null)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            if (categoryId == null || formdata == null)
+            if (categoryId == null)
             {
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
+
+            if(formdata == null || !ModelState.IsValid)
+            {
+                return View(formdata);
+            }
+
+            var url = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == nameof(EditCategory) && p.Method == "Put").Url + $"{categoryId}";
 
             var token = cookie.Value;
 
@@ -323,7 +342,28 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<CategoryViewModel>(data);
 
-                return View("ViewCategory", result);
+                return RedirectToAction("ViewCategory", "HouseholdApiCategories", new { householdId = result.HouseholdId, categoryId = result.Id });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+
+                var errors = JsonConvert.DeserializeObject<ApiError>(data);
+
+                foreach (var key in errors.ModelState)
+                {
+                    foreach (var error in key.Value)
+                    {
+                        ModelState.AddModelError(key.Key, error);
+                    }
+                }
+
+                return View(formdata);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {
@@ -375,6 +415,11 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 TempData["NoSuchHousehold"] = true;
 
                 return RedirectToAction("ViewHousehold", "HouseholdApiHouseholds", new { householdId = householdId });
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                //Display generic error message
+                return View("Error");
             }
             else
             {

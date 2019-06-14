@@ -1,0 +1,65 @@
+﻿@model TransactionViewModel
+
+@{
+    ViewBag.Title = "ViewTransaction";
+}
+
+<h2>View Transaction</h2>
+
+@if (TempData["HasErrored"] != null || ViewBag.HasErrored != null)
+{
+    <p style="color: red">Something's not right. Please try again</p>
+}
+else
+{
+    if (TempData["BadRequestErrorMessage"] != null)
+    {
+        <p style="color: red">@TempData["BadRequestErrorMessage"]</p>
+    }
+    else
+    {
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-xl-6 col-sm-6 col-6 col-md-6">
+                        <p><span style="font-weight: bold">Name:</span> @Model.Title</p>
+                        <p><span style="font-weight: bold">Description:</span> @Model.Description</p>
+                        <p><span style="font-weight: bold">Owner:</span> @Model.TransactionOwnerUserName</p>
+                        <p><span style="font-weight: bold">Transaction date:</span> @Model.Date</p>
+                        <p><span style="font-weight: bold">Created:</span> @Model.DateCreated</p>
+                        @if (Model.DateUpdated != null)
+                        {
+                            <p><span style="font-weight: bold">Updated:</span> @Model.DateUpdated</p>
+                        }
+                        <p><span style="font-weight: bold">Amount:</span> $@Model.Amount</p>
+                        <div>
+                            <span style="font-weight: bold">Status:</span>
+                            @if (!Model.IsTransactionVoid)
+                            {
+                                <span>Valid</span> <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Void Transaction" type="submit" /></form>
+                            }
+                            else
+                            {
+                                <span>Void</span> <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Validate transaction" type="submit" /></form>
+                            }
+                        </div>
+                        <p><span style="font-weight: bold">Category:</span> <a href="@Url.Action("ViewCategory", "HouseholdApiCategories", new { householdId = ViewBag.HouseholdId, categoryId = Model.CategoryId })"> @Model.CategoryName</a></p>
+                        <p><span style="font-weight: bold">Account:</span> <a href="@Url.Action("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = ViewBag.HouseholdId, bankAccountId = Model.BankAccountId })"> @Model.BankAccountName</a></p>
+                    </div>
+                    <div class="col-lg-6 col-xl-6 col-sm-6 col-6 col-md-6">
+                        @*<form method="post" action="@Url.Action("UpdateBankAccountBalance", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = ViewBag.HouseholdId })">
+                                <button type="submit">Update Balance</button>
+                            </form>*@
+
+
+                        <a href="@Url.Action("EditTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, householdId = ViewBag.HouseholdId })">Edit</a>
+
+                        <form method="post" action="@Url.Action("DeleteTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })">
+                            <input value="Delete" type="submit" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -231,7 +231,70 @@ namespace HouseholdManagementAPIConsumer.Models.HelperClasses
                     Name = "ViewTransaction",
                     Method = "Get",
                     Url = $"{Domain}/api/Transactions/"
-                }
+                },
+
+                new HttpUrl
+                {
+                    Name = "CreateTransaction",
+                    Method = "Post",
+                    Url = $"{Domain}/api/Transactions/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "CreateTransactionFromHousehold",
+                    Method = "Post",
+                    Url = $"{Domain}/api/Transactions/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditTransaction",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Transactions/Edit/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "EditTransaction",
+                    Method = "Put",
+                    Url = $"{Domain}/api/Transactions/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "DeleteTransaction",
+                    Method = "Delete",
+                    Url = $"{Domain}/api/Transactions/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "ToggleVoidTransaction",
+                    Method = "Put",
+                    Url = $"{Domain}/api/Transactions/ToggleVoidTransaction/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "GetBankAccountsForStats",
+                    Method = "Get",
+                    Url = $"{Domain}/api/BankAccounts/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "GetCategoriesForStats",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Categories/"
+                },
+
+                new HttpUrl
+                {
+                    Name = "GetTransactions",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Transactions/"
+                },
             };
         }
     }

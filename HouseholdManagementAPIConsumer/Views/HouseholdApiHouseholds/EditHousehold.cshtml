@@ -4,6 +4,10 @@
     ViewBag.Title = "EditHousehold";
 }
 
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
 
 <h2>Edit Household</h2>
 
@@ -11,29 +15,33 @@
 {
     <p>Encountered a problem! Please try again later</p>
 }
-
-
-@if (ViewBag.HasErrored == null && ViewBag.NoHouseholds == null)
+else
 {
-    <form method="post" @*action="@Url.Action("EditHousehold", "HouseholdApiHouseholds")"*@>
-        <div class="form-group">
-            <p>
-                @Html.LabelFor(p => p.Name, new { @class = "text-info" })
-            </p>
-            @Html.TextBoxFor(p => p.Name)
-        </div>
+    if (ViewBag.NoHouseholds == null)
+    {
+        <form method="post" @*action="@Url.Action("EditHousehold", "HouseholdApiHouseholds")"*@>
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <p>
+                    @Html.LabelFor(p => p.Name, new { @class = "text-info" })
+                </p>
+                @Html.ValidationMessageFor(p => p.Name)
+                @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
+            </div>
 
-        <div class="form-group">
-            <p>
-                @Html.LabelFor(p => p.Description, new { @class = "text-info" })
-            </p>
-            @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
-        </div>
+            <div class="form-group">
+                <p>
+                    @Html.LabelFor(p => p.Description, new { @class = "text-info" })
+                </p>
+                @Html.ValidationMessageFor(p => p.Description)
+                @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+            </div>
 
-        <button type="submit">Submit</button>
-    </form>
-}
-else if (ViewBag.NoHouseholds != null && ViewBag.NoHouseholds == true && ViewBag.HasErrored == null)
-{
-    <p>No households found</p>
+            <button type="submit">Submit</button>
+        </form>
+    }
+    else if (ViewBag.NoHouseholds != null && ViewBag.NoHouseholds == true && ViewBag.HasErrored == null)
+    {
+        <p>No households found</p>
+    }
 }

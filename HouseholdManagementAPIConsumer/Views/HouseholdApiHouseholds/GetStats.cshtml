@@ -1,0 +1,91 @@
+﻿@model StatModel
+
+@{
+    ViewBag.Title = "GetStats";
+}
+
+<style>
+    .accountBox-holder {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    .categories-holder {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+
+    .accountBox {
+        border: 1.5px solid silver;
+        box-sizing: border-box;
+        padding: 0 0 0 10px;
+        margin: 5px;
+        display: inline-block;
+        width: 300px;
+        border-radius: 10px;
+    }
+    
+    .categoryBox{
+        padding: 0 0 0 3px;
+        margin: 3px;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+
+    .bankAccountLink {
+        text-decoration: none;        
+    }
+
+    .bankAccountLink:hover {
+        text-decoration: none;
+    }
+
+    .categoryStats {
+        font-size: 1.15em;
+    }
+
+    .categoryLink {
+        text-decoration: none;
+    }
+
+    .categoryLink:hover{
+        text-decoration: none;
+    }
+
+    .iconCircleClass{
+        background-color: lawngreen;
+        border: .5px solid silver;
+        border-radius: 50px;
+        margin-left: 160px;
+        padding: 0 10px 0 10px;
+    }
+</style>
+
+<h2>Stats</h2>
+
+@if (ViewBag.HasErrored == null && Model.BankAccounts.Any())
+{
+    <div class="accountBox-holder">
+        @for (var i = 0; i < Model.BankAccounts.Count(); i++)
+        {
+            <div class="accountBox">
+                <h3><a href="@Url.Action("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.BankAccounts[i].HouseholdId, bankAccountId = Model.BankAccounts[i].Id })" class="bankAccountLink">@Model.BankAccounts[i].Name</a><span class="iconCircleClass"></span></h3>               
+                <p style="font-weight: bold; font-size: 2em">$@Model.BankAccounts[i].Balance</p>
+                <div class="categories-holder">
+                    @for (var j = 0; j < Model.Categories.Count(); j++)
+                    {
+                        <div class="categoryBox">
+                            <div>
+                                <p class="categoryStats">
+                                    <span style="font-weight: 600"><a class="text-light categoryLink" href="@Url.Action("ViewCategory", "HouseholdApiCategories", new { householdId = Model.Categories[j].HouseholdId, categoryId = Model.Categories[j].Id })">@Model.Categories[j].Name:</a> </span>
+                                    $@Model.Transactions.Where(p => p.BankAccountId == Model.BankAccounts[i].Id && p.CategoryId == Model.Categories[j].Id && !p.IsTransactionVoid).Sum(p => p.Amount)
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
