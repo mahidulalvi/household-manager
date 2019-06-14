@@ -336,6 +336,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
 
 
+        //Not implemented, but kept for future usage and development
         [HttpPost]
         public ActionResult CreateTransactionFromHousehold(string householdId, AlternativeCreateTransactionViewModel formdata)
         {

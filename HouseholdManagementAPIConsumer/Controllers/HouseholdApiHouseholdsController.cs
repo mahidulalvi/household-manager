@@ -369,21 +369,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-            //var parameters = new List<KeyValuePair<string, string>>();
-            //parameters.Add(new KeyValuePair<string, string>("Name", householdId));
-            //var encodedValues = new FormUrlEncodedContent(parameters);
-
             var response = httpClient.DeleteAsync(url).Result;
 
             //HouseholdViewModel result;
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                //Read the response
-                //var data = response.Content.ReadAsStringAsync().Result;
-
-                ////Convert the data back into an object
-                //result = JsonConvert.DeserializeObject<HouseholdViewModel>(data);
 
                 return RedirectToAction("ViewHouseholds", "HouseholdApiHouseholds");
             }
