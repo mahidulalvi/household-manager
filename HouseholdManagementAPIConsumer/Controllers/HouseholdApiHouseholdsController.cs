@@ -17,10 +17,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
     public class HouseholdApiHouseholdsController : Controller
     {
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
+        private string UrlToVerifyUserAsOwner { get; set; }
 
         public HouseholdApiHouseholdsController()
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
+            UrlToVerifyUserAsOwner = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == "VerifyUserAsHouseholdOwner" && p.Method == "Get").Url;
         }
 
 
@@ -113,6 +115,19 @@ namespace HouseholdManagementAPIConsumer.Controllers
                     ViewBag.NoSuchUser = TempData["NoSuchUser"];
                 }
 
+                var urlToVerifyUserAsOwner = UrlToVerifyUserAsOwner + householdId;
+                var verificationResponse = httpClient.GetAsync(urlToVerifyUserAsOwner).Result;      
+
+                if(verificationResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.UserIsOwner = true;
+                }
+                else
+                {
+                    ViewBag.UserIsOwner = false;
+                }
+
+                //Convert the data back into an object
                 return View(result);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)

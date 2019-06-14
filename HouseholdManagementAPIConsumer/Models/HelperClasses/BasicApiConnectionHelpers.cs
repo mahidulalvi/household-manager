@@ -295,6 +295,13 @@ namespace HouseholdManagementAPIConsumer.Models.HelperClasses
                     Method = "Get",
                     Url = $"{Domain}/api/Transactions/"
                 },
+
+                new HttpUrl
+                {
+                    Name = "VerifyUserAsHouseholdOwner",
+                    Method = "Get",
+                    Url = $"{Domain}/api/Households/IsUserHouseholdOwner/"
+                }
             };
         }
     }

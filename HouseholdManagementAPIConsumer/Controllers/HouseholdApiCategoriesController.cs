@@ -15,10 +15,12 @@ namespace HouseholdManagementAPIConsumer.Controllers
     public class HouseholdApiCategoriesController : Controller
     {
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
+        private string UrlToVerifyUserAsOwner { get; set; }
 
         public HouseholdApiCategoriesController()
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
+            UrlToVerifyUserAsOwner = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == "VerifyUserAsHouseholdOwner" && p.Method == "Get").Url;
         }
 
         [HttpGet]
@@ -105,6 +107,19 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<CategoryViewModel>(data);
+
+
+                var urlToVerifyUserAsOwner = UrlToVerifyUserAsOwner + householdId;
+                var verificationResponse = httpClient.GetAsync(urlToVerifyUserAsOwner).Result;
+
+                if (verificationResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.UserIsOwner = true;
+                }
+                else
+                {
+                    ViewBag.UserIsOwner = false;
+                }
 
                 return View(result);
             }

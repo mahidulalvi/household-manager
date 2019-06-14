@@ -46,16 +46,19 @@ else
                     <p><span style="font-weight: bold">Household:</span> @Model.HouseholdName</p>
                 </div>
                 <div class="col-lg-6 col-xl-6 col-sm-6 col-6 col-md-6">
-                    <form method="post" action="@Url.Action("UpdateBankAccountBalance", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
-                        <button type="submit">Update Balance</button>
-                    </form>
+                    @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                    {
+                        <form method="post" action="@Url.Action("UpdateBankAccountBalance", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
+                            <button type="submit">Update Balance</button>
+                        </form>
 
 
-                    <a href="@Url.Action("EditBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.HouseholdId, bankAccountId = Model.Id })">Edit</a>
+                        <a href="@Url.Action("EditBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.HouseholdId, bankAccountId = Model.Id })">Edit</a>
 
-                    <form method="post" action="@Url.Action("DeleteBankAccount", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
-                        <button type="submit">Delete</button>
-                    </form>
+                        <form method="post" action="@Url.Action("DeleteBankAccount", "HouseholdApiBankAccounts", new { bankAccountId = Model.Id, householdId = Model.HouseholdId })">
+                            <button type="submit">Delete</button>
+                        </form>
+                    }
                 </div>
             </div>
         </div>

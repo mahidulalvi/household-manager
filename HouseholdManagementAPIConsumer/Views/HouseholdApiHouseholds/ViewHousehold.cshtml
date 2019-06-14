@@ -39,13 +39,16 @@ else
                 </div>
 
                 <p style="margin-bottom: 0">
-                @Html.ActionLink("Stats", "GetStats", "HouseholdApiHouseholds", routeValues: new { householdId = Model.Id }, htmlAttributes: null)
+                    @Html.ActionLink("Stats", "GetStats", "HouseholdApiHouseholds", routeValues: new { householdId = Model.Id }, htmlAttributes: null)
                 </p>
 
 
 
                 <!-- Button trigger modal -->
-                <a class="btn invite-member-button" style="padding-left: 0" data-toggle="modal" href="#invitemembersModal" onclick="ModalContentFetcher()">Invite household member</a>
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <a class="btn invite-member-button" style="padding-left: 0" data-toggle="modal" href="#invitemembersModal" onclick="ModalContentFetcher()">Invite household member</a>
+                }
 
                 <!-- Modal -->
                 <div class="modal fade" id="invitemembersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -69,36 +72,16 @@ else
                 </div>
 
 
-                @*<a class="btn create-category-button" style="padding-left: 0" data-toggle="modal" href="#createCategoryModal" onclick="CreateCategoryFetcher()">Create Category</a>*@
-
-                <!-- Modal -->
-                @*<div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabels">Create Category</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body createCategory-body">
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>*@
-
-                <p>
-                    @Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id }, htmlAttributes: null)
-                </p>
-
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <p>
+                        @Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id }, htmlAttributes: null)
+                    </p>
+                }
 
                 @if (TempData["CannotLeaveHousehold"] != null)
                 {
-                <p style="color: red; font-weight: bold">@TempData["CannotLeaveHousehold"]</p>
+                    <p style="color: red; font-weight: bold">@TempData["CannotLeaveHousehold"]</p>
                 }
 
                 <div style="margin: 20px 0;">
@@ -107,24 +90,29 @@ else
                     </form>
                 </div>
 
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <div>
+                        <form method="post" action="@Url.Action("DeleteHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id })">
 
-                <div>
-                    <form method="post" action="@Url.Action("DeleteHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id })">
+                            @if (TempData["NoSuchHousehold"] != null)
+                            {
+                                <p style="color: red; font-weight: bold">Household not found!</p>
+                            }
 
-                        @if (TempData["NoSuchHousehold"] != null)
-                        {
-                            <p style="color: red; font-weight: bold">Household not found!</p>
-                        }
-
-                        <button type="submit" style="background-color: wheat; border: solid 1.5px red;"><span style="color: darkred; font-weight: bold;">Delete household</span></button>
-                    </form>
-                </div>
+                            <button type="submit" style="background-color: wheat; border: solid 1.5px red;"><span style="color: darkred; font-weight: bold;">Delete household</span></button>
+                        </form>
+                    </div>
+                }
             </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xl-6" >
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xl-6">
                 <div>
                     <p style="font-weight: bold; font-size: 1.5em">Categories</p>
 
-                    <p><a href="@Url.Action("CreateCategory", "HouseholdApiCategories", new { householdId = Model.Id })">Create Category</a></p>
+                    @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                    {
+                        <p><a href="@Url.Action("CreateCategory", "HouseholdApiCategories", new { householdId = Model.Id })">Create Category</a></p>
+                    }
                     <div>
                         @{ Html.RenderAction("ViewCategories", "HouseholdApiCategories", routeValues: new { householdId = Model.Id });
                         }
@@ -133,8 +121,10 @@ else
                 <div>
                     <p style="font-weight: bold; font-size: 1.5em">Accounts</p>
 
-                    <p><a href="@Url.Action("CreateBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.Id })">Create Bank Account</a></p>
-
+                    @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                    {
+                        <p><a href="@Url.Action("CreateBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.Id })">Create Bank Account</a></p>
+                    }
                     <div>
                         @{ Html.RenderAction("ViewBankAccounts", "HouseholdApiBankAccounts", routeValues: new { householdId = Model.Id });
                         }
@@ -143,10 +133,10 @@ else
             </div>
         </div>
     </div>
-}
 
-<script src="~/Scripts/jquery-3.3.1.min.js"></script>
-<script>
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script>
     function CreateCategoryFetcher() {
         return fetch('../../HouseholdApiCategories/CreateCategory?householdId=@Model.Id', {
             method: "Get"
@@ -246,4 +236,5 @@ else
         domelement2.innerHTML = "";
         return domelement2.insertAdjacentHTML('afterbegin', receivedElement);
     }
-</script>
+    </script>
+}
