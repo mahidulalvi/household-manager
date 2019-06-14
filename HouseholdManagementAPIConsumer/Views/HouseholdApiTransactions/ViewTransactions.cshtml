@@ -53,16 +53,30 @@ else
                                 @element.Amount
                             </td>
                             <td>
-                                <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = element.Id, bankAccountId = element.BankAccountId, householdId = ViewBag.HouseholdId })">
-                                    @if (element.IsTransactionVoid)
+                                @if (ViewBag.UserIsHouseholdOwner != null && ViewBag.UserIsHouseholdOwner == true)
+                                {
+                                    <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = element.Id, bankAccountId = element.BankAccountId, householdId = ViewBag.HouseholdId })">
+                                        @if (element.IsTransactionVoid)
+                                        {
+                                            <p>Void <input style="margin-left: 20px;" type="submit" value="Validate" /></p>
+                                        }
+                                        else
+                                        {
+                                            <p>Valid <input style="margin-left: 20px;" type="submit" value="Void" /></p>
+                                        }
+                                    </form>
+                                }
+                                else
+                                {
+                                    if (element.IsTransactionVoid)
                                     {
-                                        <p>Void <input style="margin-left: 20px;" type="submit" value="Validate" /></p>
+                                        <p>Void</p>
                                     }
                                     else
                                     {
-                                        <p>Valid <input style="margin-left: 20px;" type="submit" value="Void" /></p>
+                                        <p>Valid</p>
                                     }
-                                </form>
+                                }
                             </td>
                         </tr>
                     }

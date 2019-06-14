@@ -6,10 +6,24 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            // This will make every element with the class "date-picker" into a DatePicker element
+            $('.transactionDate').datepicker(
+                {
+                    dateFormat: 'mm/dd/yy',
+                    changeMonth: true,
+                    changeYear: true
+                });
+        })
+    </script>
 }
 
 
-
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet">
 
 
 
@@ -75,7 +89,7 @@ else
                     @Html.LabelFor(p => p.Date, new { @class = "text-info" })
                 </p>
                 @Html.ValidationMessageFor(p => p.Date)
-                @Html.TextAreaFor(p => p.Date, new { @class = "form-control" })
+                @Html.TextBoxFor(p => p.Date, new { @class = "form-control transactionDate" })
             </div>
 
 

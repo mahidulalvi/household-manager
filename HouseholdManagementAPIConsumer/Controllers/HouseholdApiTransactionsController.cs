@@ -15,10 +15,14 @@ namespace HouseholdManagementAPIConsumer.Controllers
     public class HouseholdApiTransactionsController : Controller
     {
         private BasicApiConnectionHelpers BasicApiConnectionHelper { get; set; }
+        private string UrlToVerifyUserAsOwner { get; set; }
+        private string UrlToVerifyUserAsHouseholdOwner { get; set; }
 
         public HouseholdApiTransactionsController()
         {
             BasicApiConnectionHelper = new BasicApiConnectionHelpers();
+            UrlToVerifyUserAsOwner = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == "VerifyUserAsTransactionOwner" && p.Method == "Get").Url;
+            UrlToVerifyUserAsHouseholdOwner = BasicApiConnectionHelper.AllUrls.FirstOrDefault(p => p.Name == "VerifyUserAsHouseholdOwner" && p.Method == "Get").Url;
         }
 
 
@@ -62,6 +66,19 @@ namespace HouseholdManagementAPIConsumer.Controllers
 
                 ViewBag.HouseholdId = householdId;
                 ViewBag.BankAccountId = bankAccountId;
+
+
+                var urlToVerifyUserAsHouseholdOwner = UrlToVerifyUserAsHouseholdOwner + householdId;
+                var verificationResponse = httpClient.GetAsync(urlToVerifyUserAsHouseholdOwner).Result;
+
+                if (verificationResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.UserIsHouseholdOwner = true;
+                }
+                else
+                {
+                    ViewBag.UserIsHouseholdOwner = false;
+                }
 
                 return View(result);
             }
@@ -132,6 +149,18 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 result = JsonConvert.DeserializeObject<TransactionViewModel>(data);
 
                 ViewBag.HouseholdId = householdId;
+
+                var urlToVerifyUserAsOwner = UrlToVerifyUserAsOwner + transactionId;
+                var verificationResponse = httpClient.GetAsync(urlToVerifyUserAsOwner).Result;
+
+                if (verificationResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    ViewBag.UserIsOwner = true;
+                }
+                else
+                {
+                    ViewBag.UserIsOwner = false;
+                }
 
                 return View(result);
             }
@@ -634,7 +663,7 @@ namespace HouseholdManagementAPIConsumer.Controllers
                 //Convert the data back into an object
                 result = JsonConvert.DeserializeObject<TransactionViewModel>(data);
 
-                return RedirectToAction("ViewTransaction", "HouseholdApiTransactions", new { transactionId = result.Id, bankAccountId = result.BankAccountId, householdId = householdId });
+                return RedirectToAction("ViewBankAccount", "HouseholdApiBankAccounts", new { householdId = householdId, bankAccountId = result.BankAccountId });
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
             {

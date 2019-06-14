@@ -36,11 +36,17 @@ else
                             <span style="font-weight: bold">Status:</span>
                             @if (!Model.IsTransactionVoid)
                             {
-                                <span>Valid</span> <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Void Transaction" type="submit" /></form>
+                                <span>Valid</span>
+                                if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                                {<form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Void Transaction" type="submit" /></form>
+                                }
                             }
                             else
                             {
-                                <span>Void</span> <form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Validate transaction" type="submit" /></form>
+                                <span>Void</span>
+                                if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                                {<form method="post" action="@Url.Action("ToggleVoidTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })"><input value="Validate transaction" type="submit" /></form>
+                                }
                             }
                         </div>
                         <p><span style="font-weight: bold">Category:</span> <a href="@Url.Action("ViewCategory", "HouseholdApiCategories", new { householdId = ViewBag.HouseholdId, categoryId = Model.CategoryId })"> @Model.CategoryName</a></p>
@@ -51,12 +57,14 @@ else
                                 <button type="submit">Update Balance</button>
                             </form>*@
 
+                        @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                        {
+                            <a href="@Url.Action("EditTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, householdId = ViewBag.HouseholdId })">Edit</a>
 
-                        <a href="@Url.Action("EditTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, householdId = ViewBag.HouseholdId })">Edit</a>
-
-                        <form method="post" action="@Url.Action("DeleteTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })">
-                            <input value="Delete" type="submit" />
-                        </form>
+                            <form method="post" action="@Url.Action("DeleteTransaction", "HouseholdApiTransactions", new { transactionId = Model.Id, bankAccountId = Model.BankAccountId, householdId = ViewBag.HouseholdId })">
+                                <input value="Delete" type="submit" />
+                            </form>
+                        }
                     </div>
                 </div>
             </div>
