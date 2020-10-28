@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@if(TempData["PasswordResetSuccessful"] != null && (bool)TempData["PasswordResetSuccessful"] == true)
+{
+    <div>
+        <p style="color: red; font-weight: bold">Your password has been reset</p>
+    </div>
+}
+
+
+<div>
+    <p>Welcome to the ultimate Household Manager app. You can do so much here. Starting from creating new households, adding household members, creating bank accounts, creating transactions and managing transactions. This helps you with sorting out your budget and allocating credits to the most accurate point.</p>
+
+
+    <p>Just sign in and start managing your household</p>
+</div>

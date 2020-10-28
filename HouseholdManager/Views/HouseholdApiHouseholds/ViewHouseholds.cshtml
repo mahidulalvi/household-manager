@@ -1,0 +1,56 @@
+﻿@model List<HouseholdViewModel>
+
+@{
+    ViewBag.Title = "ViewHouseholds";
+}
+
+<style>
+    .view-household-link
+    {
+        text-decoration: none;
+        color: tomato;
+    }
+
+    .each-household 
+    {
+        width: 300px;
+        text-wrap: normal;
+        border: solid 2px silver;
+        border-radius: 3px;
+        margin: 5px 0 5px;
+        padding: 3px;
+        background-color: wheat;
+    }
+
+    .households-container 
+    {
+        display: flex;
+        flex-flow: row wrap;
+    }
+</style>
+
+<h2>View Households</h2>
+
+@if (ViewBag.HasErrored == true)
+{
+    <p>Encountered an error. Please try again</p>
+}
+
+@Html.ActionLink("Create Household", "CreateHousehold", "HouseholdApiHouseholds")
+
+<div class="households-container">
+    @if (Model.Any())
+    {
+        for (var i = 0; i < Model.Count(); i++)
+        {
+            <div class="each-household">
+                <p>
+                    @Html.ActionLink(Model[i].Name, "ViewHousehold", "HouseholdApiHouseholds", routeValues: new { householdId = Model[i].Id }, htmlAttributes: new { @class = "view-household-link" })
+                </p>
+                <p>@Model[i].Description</p>
+                <p>@Model[i].DateCreated</p>
+                <p>@Model[i].DateUpdated</p>
+            </div>
+        }
+    }
+</div>
