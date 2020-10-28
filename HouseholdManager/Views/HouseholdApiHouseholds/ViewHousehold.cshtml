@@ -1,0 +1,239 @@
+﻿@model HouseholdViewModel
+
+@{
+    ViewBag.Title = "ViewHousehold";
+}
+@if (ViewBag.HasErrored != null && ViewBag.HasErrored)
+{
+    <p>Encountered a problem!</p>
+}
+else
+{
+
+    if (ViewBag.NoSuchUser != null && ViewBag.NoSuchUser == true)
+    {
+        <p style="color: blue; font-weight: bold">No user with that email!</p>
+    }
+
+
+    <h2>View Household</h2>
+    <div class="container">
+
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xl-6">
+                <div>
+                    <p><span style="font-weight: bold">Name:</span> @Model.Name</p>
+                    <p><span style="font-weight: bold">Description:</span> @Model.Description</p>
+                    <p><span style="font-weight: bold">Created:</span> @Model.DateCreated</p>
+                    @if (Model.DateUpdated != null)
+                    {
+                        <p><span style="font-weight: bold">Updated:</span> @Model.DateUpdated</p>
+                    }
+                    <p><span style="font-weight: bold">Owner:</span> @Model.HouseholdOwner.UserName</p>
+                </div>
+
+                <a href="#" onclick="ViewMembersAJAX()">View Members</a>
+                <div id="viewMembersHolder">
+
+                </div>
+
+                <p style="margin-bottom: 0">
+                    @Html.ActionLink("Stats", "GetStats", "HouseholdApiHouseholds", routeValues: new { householdId = Model.Id }, htmlAttributes: null)
+                </p>
+
+
+
+                <!-- Button trigger modal -->
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <a class="btn invite-member-button" style="padding-left: 0" data-toggle="modal" href="#invitemembersModal" onclick="ModalContentFetcher()">Invite household member</a>
+                }
+
+                <!-- Modal -->
+                <div class="modal fade" id="invitemembersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Invite member</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body invite-body">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <p>
+                        @Html.ActionLink("Edit household", "EditHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id }, htmlAttributes: null)
+                    </p>
+                }
+
+                @if (TempData["CannotLeaveHousehold"] != null)
+                {
+                    <p style="color: red; font-weight: bold">@TempData["CannotLeaveHousehold"]</p>
+                }
+
+                <div style="margin: 20px 0;">
+                    <form method="post" action="@Url.Action("LeaveHousehold", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })">
+                        <button type="submit" style="color: red">Leave household</button>
+                    </form>
+                </div>
+
+                @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                {
+                    <div>
+                        <form method="post" action="@Url.Action("DeleteHousehold", "HouseholdApiHouseholds", new { householdId = Model.Id })">
+
+                            @if (TempData["NoSuchHousehold"] != null)
+                            {
+                                <p style="color: red; font-weight: bold">Household not found!</p>
+                            }
+
+                            <button type="submit" style="background-color: wheat; border: solid 1.5px red;"><span style="color: darkred; font-weight: bold;">Delete household</span></button>
+                        </form>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xl-6">
+                <div>
+                    <p style="font-weight: bold; font-size: 1.5em">Categories</p>
+
+                    @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                    {
+                        <p><a href="@Url.Action("CreateCategory", "HouseholdApiCategories", new { householdId = Model.Id })">Create Category</a></p>
+                    }
+                    <div>
+                        @{ Html.RenderAction("ViewCategories", "HouseholdApiCategories", routeValues: new { householdId = Model.Id });
+                        }
+                    </div>
+                </div>
+                <div>
+                    <p style="font-weight: bold; font-size: 1.5em">Accounts</p>
+
+                    @if (ViewBag.UserIsOwner != null && ViewBag.UserIsOwner == true)
+                    {
+                        <p><a href="@Url.Action("CreateBankAccount", "HouseholdApiBankAccounts", new { householdId = Model.Id })">Create Bank Account</a></p>
+                    }
+                    <div>
+                        @{ Html.RenderAction("ViewBankAccounts", "HouseholdApiBankAccounts", routeValues: new { householdId = Model.Id });
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script>
+    function CreateCategoryFetcher() {
+        return fetch('../../HouseholdApiCategories/CreateCategory?householdId=@Model.Id', {
+            method: "Get"
+        }).then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                //console.log(response);
+
+                response.text().then(function (data) {
+                    //console.log(data);
+                    DomAdderForCreatingCategories(data);
+                });
+            }
+        )
+        .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+        });
+    }
+
+
+
+
+    function DomAdderForCreatingCategories(receivedElement) {
+        var domTargetElement = document.querySelector(".createCategory-body");
+        domTargetElement.innerHTML = "";
+        return domTargetElement.insertAdjacentHTML('afterbegin', receivedElement);
+    }
+
+
+
+
+
+
+
+    function ModalContentFetcher() {
+        return fetch('../../HouseholdApIHouseholdMembers/_InviteHouseholdMember?householdId=@Model.Id', {
+            method: "Get"
+        }).then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                //console.log(response);
+
+                response.text().then(function (data) {
+                    //console.log(data);
+                    DomAdder(data);
+                });
+            }
+        )
+        .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+        });
+    }
+
+
+
+
+    function DomAdder(receivedElement) {
+        var domelement = document.querySelector(".invite-body");
+        domelement.innerHTML = "";
+        return domelement.insertAdjacentHTML('afterbegin', receivedElement);
+    }
+
+
+    function ViewMembersAJAX() {
+        return fetch("../../@Url.Action("_ViewHouseholdMembers", "HouseholdApiHouseholdMembers", new { householdId = Model.Id })", {
+            method: "Get"
+        }).then(
+            function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' +
+                        response.status);
+                    return;
+                }
+                //console.log(response);
+
+                response.text().then(function (data) {
+                    //console.log(data);
+                    DomAdderForViewingMembers(data);
+                });
+            }
+        )
+        .catch(function (err) {
+                console.log('Fetch Error :-S', err);
+        });
+    }
+
+    function DomAdderForViewingMembers(receivedElement) {
+        var domelement2 = document.querySelector("#viewMembersHolder");
+        domelement2.innerHTML = "";
+        return domelement2.insertAdjacentHTML('afterbegin', receivedElement);
+    }
+    </script>
+}
